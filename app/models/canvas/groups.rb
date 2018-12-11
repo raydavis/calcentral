@@ -9,6 +9,25 @@ module Canvas
       end
     end
 
+
+    def course_groups(course_id)
+      response = paged_get "courses/#{course_id}/groups"
+      response[:body]
+    end
+
+    def group_memberships(group_id)
+      response = paged_get "groups/#{group_id}/memberships"
+      response[:body]
+    end
+
+    def create_membership(group_id, user_id)
+      request_params = {
+        'user_id' => user_id
+      }
+      wrapped_post "groups/#{group_id}/memberships", request_params
+    end
+
+
     private
 
     def mock_json
