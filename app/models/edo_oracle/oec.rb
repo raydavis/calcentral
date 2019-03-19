@@ -102,7 +102,8 @@ module EdoOracle
             FROM SISEDO.ETS_ENROLLMENTV00_VW enroll
             WHERE
               enroll."TERM_ID" = '#{term_id}'
-              AND (enroll."STDNT_ENRL_STATUS_CODE" = 'E')
+              AND enroll."STDNT_ENRL_STATUS_CODE" = 'E'
+              AND enroll."GRADE_MARK" != 'W'
             ORDER BY section_id, sis_id
           ) enrollments
           WHERE ROWNUM <= #{maximum_row_inclusive}
