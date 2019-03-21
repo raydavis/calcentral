@@ -68,6 +68,10 @@ module CanvasCsv
       string.gsub(/[^a-z0-9\-.]+/i, '_')
     end
 
+    def make_accounts_csv(filename, rows = nil)
+      make_csv(filename, 'account_id,parent_account_id,name,status', rows)
+    end
+
     def make_courses_csv(filename, rows = nil)
       make_csv(filename, 'course_id,short_name,long_name,account_id,term_id,status,start_date,end_date', rows)
     end

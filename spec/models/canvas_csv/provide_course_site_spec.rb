@@ -91,7 +91,7 @@ describe CanvasCsv::ProvideCourseSite do
       end
       it 'calculates 10 total steps to completion' do
         subject.bg_create_course_site(site_name, site_course_code, 'fall-2014', ['1136', '1204'])
-        expect(subject.instance_eval { @background_job_total_steps }).to eq 10
+        expect(subject.instance_eval { @background_job_total_steps }).to eq 11
       end
     end
 
@@ -108,7 +108,7 @@ describe CanvasCsv::ProvideCourseSite do
       end
       it 'calculates 8 total steps to completion' do
         subject.bg_create_course_site(site_name, site_course_code, 'fall-2014', ['1136', '1204'], true)
-        expect(subject.instance_eval { @background_job_total_steps }).to eq 8
+        expect(subject.instance_eval { @background_job_total_steps }).to eq 9
       end
     end
   end
@@ -302,7 +302,7 @@ describe CanvasCsv::ProvideCourseSite do
 
     it 'raises exception if import courses not present' do
       subject.import_data['courses'] = nil
-      expect { subject.identify_department_subaccount }.to raise_error(RuntimeError, 'Unable identify department subaccount. Course list not loaded or empty.')
+      expect { subject.identify_department_subaccount }.to raise_error(RuntimeError, 'Unable to identify department subaccount. Course list not loaded or empty.')
     end
 
     it 'adds department id to import data' do
@@ -1088,11 +1088,6 @@ describe CanvasCsv::ProvideCourseSite do
       allow_any_instance_of(Canvas::ExistenceCheck).to receive(:account_defined?).and_return(true)
       result = subject.subaccount_for_department('MALAY/I')
       expect(result).to eq 'ACCT:MALAY_I'
-    end
-
-    it 'should raise exception if the subaccount does not exist in Canvas' do
-      allow_any_instance_of(Canvas::ExistenceCheck).to receive(:account_defined?).and_return(false)
-      expect { subject.subaccount_for_department('COMPSCI') }.to raise_error(RuntimeError, 'Could not find bCourses account for department COMPSCI')
     end
   end
 

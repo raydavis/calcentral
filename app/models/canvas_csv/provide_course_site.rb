@@ -14,7 +14,7 @@ module CanvasCsv
     end
 
     def bg_create_course_site(site_name, site_course_code, term_slug, ccns, is_admin_by_ccns = false)
-      background_job_initialize(job_type: 'course_creation', total_steps: 10)
+      background_job_initialize(job_type: 'course_creation', total_steps: 11)
       background_correlate(background.create_course_site(site_name, site_course_code, term_slug, ccns, is_admin_by_ccns))
     end
 
@@ -134,7 +134,7 @@ module CanvasCsv
     end
 
     def identify_department_subaccount
-      raise RuntimeError, 'Unable identify department subaccount. Course list not loaded or empty.' if @import_data['courses'].blank?
+      raise RuntimeError, 'Unable to identify department subaccount. Course list not loaded or empty.' if @import_data['courses'].blank?
 
       # Derive course site SIS ID, course code (short name), and title from first section's course info.
       department = @import_data['courses'][0][:dept]
@@ -180,6 +180,24 @@ module CanvasCsv
       raise RuntimeError, 'Course site could not be created.' if response.blank?
       logger.warn "Successfully imported course from: #{@import_data['courses_csv_file']}"
       background_job_complete_step 'Imported course'
+    end
+
+    def import_subaccount(sis_account_id, dept)
+      account_definitions = [{
+        'account_id' => sis_account_id,
+        'parent_account_id' => 'ACCT:OFFICIAL_COURSES',
+        'name' => dept,
+        'status' => 'active'
+      }]
+      @import_data['subaccount_csv_file'] = make_accounts_csv("#{csv_filename_prefix}-accounts.csv", account_definitions)
+      response = Canvas::SisImport.new.import_with_check(@import_data['subaccount_csv_file'])
+      if response.blank?
+        logger.error "New subaccount #{sis_account_id} did not import from #{@import_data['subaccount_csv_file']}"
+        raise RuntimeError, "Could not create subaccount for department #{dept}!"
+      else
+        logger.warn "Successfully imported subaccount #{sis_account_id} from: #{@import_data['subaccount_csv_file']}"
+        background_job_complete_step 'Imported department subaccount'
+      end
     end
 
     def import_sections(canvas_section_rows)
@@ -417,11 +435,17 @@ module CanvasCsv
       department.gsub!(/\//, '_')
       subaccount = "ACCT:#{department}"
       if Canvas::ExistenceCheck.new.account_defined? subaccount
+        @background_job_total_steps -= 1 if background_job_id
         subaccount
       else
-        # There is no programmatic way to create a subaccount in Canvas.
-        logger.error "Cannot provision course site; bCourses account #{subaccount} does not exist!"
-        raise RuntimeError, "Could not find bCourses account for department #{department}"
+        # The account needs to be in place to support later steps.
+        import_subaccount(subaccount, department)
+        if Canvas::ExistenceCheck.new.account_defined? subaccount
+          subaccount
+        else
+          logger.error "Cannot provision course site; bCourses account #{subaccount} does not exist!"
+          raise RuntimeError, "Could not find bCourses account for department #{department}"
+        end
       end
     end
 

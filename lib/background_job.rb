@@ -127,6 +127,7 @@ module BackgroundJob
   end
 
   def background_job_complete_step(step_text = '')
+    return unless @background_job_id
     @background_job_completed_steps << step_text
     if @background_job_status != 'Error'
       completed_steps = @background_job_completed_steps.count
