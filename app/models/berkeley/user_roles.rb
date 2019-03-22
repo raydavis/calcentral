@@ -31,7 +31,7 @@ module Berkeley
         :exStudent => (affiliations & ['STUDENT-STATUS-EXPIRED', 'FORMER-STUDENT', 'AFFILIATE-TYPE-ADVCON-ALUMNUS']).present?,
         :faculty => affiliations.include?('EMPLOYEE-TYPE-ACADEMIC'),
         :staff => affiliations.include?('EMPLOYEE-TYPE-STAFF'),
-        :guest => (affiliations & ['GUEST-TYPE-COLLABORATOR', 'GUEST-TYPE-SOCIAL']).present?
+        :guest => (affiliations & ['GUEST-TYPE-COLLABORATOR', 'GUEST-TYPE-SPONSORED']).present?
       })
     end
 
