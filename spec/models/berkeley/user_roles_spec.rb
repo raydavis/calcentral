@@ -456,7 +456,7 @@ describe Berkeley::UserRoles do
         it_behaves_like 'a parser for roles', [:guest]
       end
       context 'Cirrus-provided guest account' do
-        let(:affiliations) { ['GUEST-TYPE-SOCIAL'] }
+        let(:affiliations) { ['GUEST-TYPE-SPONSORED'] }
         it_behaves_like 'a parser for roles', [:guest]
       end
       context 'student employee' do
