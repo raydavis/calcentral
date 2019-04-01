@@ -31,8 +31,12 @@ module CalnetLdap
 
     def guests_modified_since(timestamp)
       ldap_timestamp = timestamp.to_time.utc.strftime(TIMESTAMP_FORMAT)
+      created_timestamp_filter = Net::LDAP::Filter.ge('createtimestamp', ldap_timestamp)
       modified_timestamp_filter = Net::LDAP::Filter.ge('modifytimestamp', ldap_timestamp)
-      search(base: GUEST_DN, filter: modified_timestamp_filter)
+      filter = Net::LDAP::Filter.intersect(
+        created_timestamp_filter,
+        modified_timestamp_filter)
+      search(base: GUEST_DN, filter: filter)
     end
 
     def search_by_name(name, include_guest_users=false)
