@@ -59,7 +59,8 @@ module EdoOracle
           TRIM(crs."title") AS course_title,
           cls."allowedUnitsMaximum" AS allowed_units
         FROM
-          SISEDO.CLASSSECTIONALLV01_MVW sec
+          SISEDO.CLASSSECTIONALLV01_MVW sec,
+          SISEDO.EXTENDED_TERM_MVW term
         LEFT OUTER JOIN SISEDO.DISPLAYNAMEXLATV01_MVW xlat ON (xlat."classDisplayName" = sec."displayName")
         LEFT OUTER JOIN SISEDO.API_COURSEV01_MVW crs ON (xlat."courseDisplayName" = crs."displayName")
         LEFT OUTER JOIN SISEDO.CLASSV00_VW cls ON (
@@ -80,6 +81,10 @@ module EdoOracle
         WHERE
           sec."term-id" = '#{term_id}'
           AND sec."status-code" IN ('A','S')
+          AND term.ACAD_CAREER = 'UGRD'
+          AND term.STRM = sec."term-id"
+          AND CAST(crs."fromDate" AS DATE) <= term.TERM_END_DT
+          AND CAST(crs."toDate" AS DATE) >= term.TERM_END_DT
           AND crs."updatedDate" = (
             SELECT MAX(crs2."updatedDate")
             FROM SISEDO.API_COURSEV01_MVW crs2, SISEDO.EXTENDED_TERM_MVW term2
