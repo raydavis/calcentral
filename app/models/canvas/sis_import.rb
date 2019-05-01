@@ -99,12 +99,14 @@ module Canvas
 
     # import may not be completed the first time we ask for it, so loop until it is ready.
     def import_status(import_id)
+      # We check for job completion every 20 seconds, and give up after this many minutes.
+      max_loops = settings.sis_import_timeout * 3
       start_time = Time.now.to_i
       url = "accounts/#{settings.account_id}/sis_imports/#{import_id}"
       status = nil
       sleep 2
       begin
-        Retriable.retriable(:on => Canvas::SisImport::ReportNotReadyException, :tries => 150, :interval => 20) do
+        Retriable.retriable(:on => Canvas::SisImport::ReportNotReadyException, :tries => max_loops, :interval => 20) do
           return false unless (response = wrapped_get url) && (status = response[:body])
           if %w(initializing created importing).include? status['workflow_state']
             logger.info "Import ID #{import_id} Status Report exists but is not yet ready; will retry later"
