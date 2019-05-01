@@ -135,6 +135,8 @@ canvas_proxy:
   reporter_uid:
   # Course sites before this term will not be linked to campus SIS data.
   oldest_official_term: 2016-D
+  # How many minutes for the refresh script to wait for a SIS Import to finish processing.
+  sis_import_timeout: 90
 
 ldap:
   host: 'ldap.berkeley.edu'
