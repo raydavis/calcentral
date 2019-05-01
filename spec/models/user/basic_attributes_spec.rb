@@ -5,6 +5,7 @@ describe User::BasicAttributes do
     allow(CalnetLdap::UserAttributes).to receive(:get_bulk_attributes).and_return ldap_results
   end
   let(:uids) { %w(2040 61889 211159 242881) }
+  let(:inactive_uid) { '242881' }
   let(:oracle_results) do
     [
       {
@@ -14,7 +15,7 @@ describe User::BasicAttributes do
         'last_name' => 'Bear',
         'ldap_uid' => '61889',
         'student_id' => '11667051',
-        'person_type' => 'U'
+        'person_type' => 'S'
       },
       {
         'affiliations' => 'EMPLOYEE-TYPE-STAFF,STUDENT-STATUS-EXPIRED',
@@ -55,9 +56,14 @@ describe User::BasicAttributes do
   end
 
   it 'returns an aggregation of Oracle and LDAP records' do
-    expect(attributes).to have(4).items
+    expect(attributes).to have(3).items
     uids.each do |uid|
-      expect(attributes.find { |attr| attr[:ldap_uid] == uid }).to be_present
+      found = attributes.find { |attr| attr[:ldap_uid] == uid }
+      if uid == inactive_uid
+        expect(found).to be_blank
+      else
+        expect(found).to be_present
+      end
     end
   end
 
@@ -74,12 +80,6 @@ describe User::BasicAttributes do
     expect(oski[:student_id]).to eq '11667051'
     expect(oski[:roles][:student]).to eq true
     expect(oski[:roles][:expiredAccount]).to eq false
-  end
-
-  it 'transforms attributes for an inactive user' do
-    aethelred = attributes.find { |attr| attr[:ldap_uid] == '242881' }
-    expect(aethelred[:email_address]).to eq 'inactive@berkeley.edu'
-    expect(aethelred[:roles][:expiredAccount]).to eq true
   end
 
   it 'handles empty arguments' do

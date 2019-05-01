@@ -2,6 +2,7 @@ module User
   module BasicAttributes
     extend self
 
+    # Does not include Expired or Alumni populations in search results.
     def attributes_for_uids(uids)
       return [] if uids.blank?
       uid_set = uids.to_set
@@ -15,7 +16,9 @@ module User
         end
         rows.each do |result|
           uid_set.delete result['ldap_uid']
-          attrs << transform_campus_row(result)
+          unless ['A', 'Z'].include? result['person_type']
+            attrs << transform_campus_row(result)
+          end
         end
       end
       attrs.concat CalnetLdap::UserAttributes.get_bulk_attributes(uid_set) if uid_set.any?
