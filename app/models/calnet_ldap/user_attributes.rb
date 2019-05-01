@@ -31,6 +31,7 @@ module CalnetLdap
       feed
     end
 
+    # Bulk searches are only made against the standard and Guest populations, not Expired or Alumni
     def self.get_bulk_attributes(uids)
       CalnetLdap::Client.new.search_by_uids(uids).map do |result|
         feed = parse result
