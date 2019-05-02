@@ -20,6 +20,16 @@ module DataLoch
       "daily/#{digest}-#{today}"
     end
 
+    def upload_l_and_s_students(s3_targets)
+      Rails.logger.warn "Starting L&S students snapshot, targets #{s3_targets}."
+      s3s = s3_from_names s3_targets
+      l_and_s_path = DataLoch::Zipper.zip_query "l_and_s_students" do
+        EdoOracle::Bulk.get_l_and_s_students
+      end
+      s3s.each {|s3| s3.upload("l_and_s", l_and_s_path) }
+      Rails.logger.info "L&S snapshot complete at #{l_and_s_path}."
+    end
+
     def upload_term_data(term_ids, s3_targets, is_historical=false)
       if is_historical
         data_type = 'historical'
