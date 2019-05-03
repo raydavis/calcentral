@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 # The core framework
 # https://github.com/rails/rails
-gem 'rails', '4.2.8'
+gem 'rails', '4.2.11.1'
 
 gem 'actionpack-action_caching', '~>1.1.1'
 gem 'actionpack-page_caching', '~>1.0.2'
@@ -127,6 +127,9 @@ group :development, :production do
 end
 
 group :development, :test do
+  # Currently needed by RubyMine.
+  gem 'test-unit'
+
   gem 'rspec-core', '~> 3.4.0'
   gem 'rspec-rails', '~> 3.4.1'
   gem 'rspec-mocks', '~> 3.4.0'
