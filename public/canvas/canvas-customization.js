@@ -174,16 +174,29 @@
             if (gradesExportLtiId) {
               var linkUrl = '/courses/' + courseId + '/external_tools/' + gradesExportLtiId;
 
-              // Add the 'E-Grades' export option
-              waitUntilAvailable('#gradebook-toolbar .gradebook_menu span.ui-buttonset', false, function($gradebookToolbarMenu) {
-                var eGradesButton = [
-                  '<a class="ui-button" href="' + linkUrl + '">',
-                  '  <i class="icon-export"></i>',
-                  '  E-Grades',
-                  '</a>'
-                ].join('');
-                $gradebookToolbarMenu.append(eGradesButton);
-              });
+              // Add the 'E-Grades' export option, whether in the classic Gradebook or the new Gradebook
+              if (window.ENV.GRADEBOOK_OPTIONS.gradezilla) {
+                // New Gradebook
+                waitUntilAvailable('#gradebook-toolbar .gradebook-menus', false, function($gradebookToolbarMenu) {
+                  var eGradesButton = [
+                    '<a class="ui-button" href="' + linkUrl + '">',
+                    '  E-Grades',
+                    '</a>'
+                  ].join('');
+                  $gradebookToolbarMenu.append(eGradesButton);
+                });
+              } else {
+                // Original Gradebook
+                waitUntilAvailable('#gradebook-toolbar .gradebook_menu span.ui-buttonset', false, function($gradebookToolbarMenu) {
+                  var eGradesButton = [
+                    '<a class="ui-button" href="' + linkUrl + '">',
+                    '  <i class="icon-export"></i>',
+                    '  E-Grades',
+                    '</a>'
+                  ].join('');
+                  $gradebookToolbarMenu.append(eGradesButton);
+                });
+              }
             }
           });
         }
