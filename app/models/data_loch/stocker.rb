@@ -90,6 +90,31 @@ module DataLoch
       Rails.logger.info "#{jobs} snapshots complete."
     end
 
+    def upload_advising_notes_data(s3_targets, jobs)
+      Rails.logger.warn "Starting SIS advising #{jobs} snapshot, targets #{s3_targets}."
+      job_paths = Hash[jobs.zip]
+      s3s = s3_from_names s3_targets
+      s3s.each do |s3|
+        jobs.each do |job|
+          job_paths[job] = DataLoch::Zipper.zip_query job do
+            case job
+            when 'notes'
+              EdoOracle::Bulk.get_advising_notes
+            when 'note-attachments'
+              EdoOracle::Bulk.get_advising_note_attachments
+            else
+              Rails.logger.error "Got unknown job name #{job}!"
+            end
+          end
+        end
+        job_paths.each do |job, path|
+          s3.upload("sis-sysadm/daily/advising-notes/#{job}", path) if path
+        end
+      end
+      clean_tmp_files(job_paths.values)
+      Rails.logger.info "#{jobs} snapshots complete."
+    end
+
     # Let tests intercept the file deletion.
     def clean_tmp_files(paths)
       paths.each {|p| FileUtils.rm p}
