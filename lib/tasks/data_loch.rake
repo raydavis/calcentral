@@ -41,7 +41,7 @@ namespace :data_loch do
 
   desc 'Upload advising notes, topics, and attachment data to data loch S3'
   task :notes => :environment do
-    DataLoch::Stocker.new().upload_advising_notes_data(s3_targets, ['notes', 'note-topics', 'note-attachments'])
+    DataLoch::Stocker.new().upload_advising_notes_data(s3_targets, ['notes', 'note-attachments'])
   end
 
 end
