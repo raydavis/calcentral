@@ -96,7 +96,7 @@ module DataLoch
       s3s = s3_from_names s3_targets
       s3s.each do |s3|
         jobs.each do |job|
-          job_paths[job] = DataLoch::Zipper.zip_query job do
+          job_paths[job] = DataLoch::Zipper.zip_query(job, 'JSON') do
             case job
             when 'notes'
               EdoOracle::Bulk.get_advising_notes
