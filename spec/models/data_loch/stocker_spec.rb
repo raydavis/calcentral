@@ -109,17 +109,38 @@ describe DataLoch::Stocker do
   end
 
   describe 'SIS advising notes job' do
-    it 'writes zipped notes, topics, and attachments results' do
+    it 'writes zipped notes and attachments results' do
       expect(DataLoch::S3).to receive(:new).and_return (mock_s3 = double)
       expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/advising-notes/notes', 'tmp/data_loch/notes.gz').and_return true
       expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/advising-notes/note-attachments', 'tmp/data_loch/note-attachments.gz').and_return true
       expect(subject).to receive(:clean_tmp_files).with(['tmp/data_loch/notes.gz', 'tmp/data_loch/note-attachments.gz'])
 
       subject.upload_advising_notes_data(['s3_test'], ['notes', 'note-attachments'])
-      notes_csv_rows = unzipped('notes')
-      attachments_csv_rows = unzipped('note-attachments')
-      expect(notes_csv_rows).to have(3).items
-      expect(attachments_csv_rows).to have(2).items
+      
+      notes_json = unzipped('notes')
+      notes = JSON.parse(notes_json[0])
+      expect(notes[0]['emplid']).to eq '11667051'
+      expect(notes[0]['saa_note_id']).to eq '00005'
+      expect(notes[0]['saa_seq_nbr']).to eq 2
+      expect(notes[0]['advisor_id']).to eq '3033514124'
+      expect(notes[0]['sci_note_priority']).to eq 'High'
+      expect(notes[0]['saa_note_itm_long']).to eq '<p>I am the note body</p>'
+      expect(notes[0]['scc_row_add_oprid']).to eq '1231231'
+      expect(notes[0]['scc_row_add_dttm']).to eq '2013-03-16T11:29:13.000Z'
+      expect(notes[0]['scc_row_upd_oprid']).to eq '4564564'
+      expect(notes[0]['sci_appt_id']).to eq ' '
+      expect(notes[0]['saa_note_type']).to eq 'VADMIN'
+      expect(notes[0]['uc_adv_typ_desc']).to eq 'Administrative'
+      expect(notes[0]['saa_note_subtype']).to eq 'ENTRYNOCNT'
+      expect(notes[0]['uc_adv_subtyp_desc']).to eq 'Entry w/o Contact'
+      expect(notes[0]['sci_topic']).to eq 'Academic Progress'
+
+      attachments_json = unzipped('note-attachments')
+      attachments = JSON.parse(attachments_json[0])
+      expect(attachments[0]['emplid']).to eq '11667051'
+      expect(attachments[0]['saa_note_id']).to eq '00005'
+      expect(attachments[0]['userfilename']).to eq '1234_001.pdf'
+      expect(attachments[0]['attachsysfilename']).to eq '11667051_00005_1.pdf'
     end
   end
 end

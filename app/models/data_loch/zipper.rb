@@ -4,22 +4,22 @@ module DataLoch
     BATCH_SIZE = 120000
     STAGING_DIRECTORY = Pathname.new Settings.data_loch.staging_directory
 
-    def self.zip_query(base_path)
+    def self.zip_query(base_path, format='CSV')
       path = staging_path "#{base_path}.gz"
       Zlib::GzipWriter.open(path) do |gz|
         rows = yield
-        zip_query_results(rows, gz)
+        zip_query_results(rows, gz, format)
       end
       path
     end
 
-    def self.zip_query_batched(base_path)
+    def self.zip_query_batched(base_path, format='CSV')
       path = staging_path "#{base_path}.gz"
       batch = 0
       Zlib::GzipWriter.open(path) do |gz|
         loop do
           result = yield(batch, BATCH_SIZE)
-          zip_query_results(result, gz)
+          zip_query_results(result, gz, format)
           # If we receive fewer rows than the batch size, we've read all available rows and are done.
           if result.rows.count < BATCH_SIZE
             Rails.logger.warn "On batch #{batch}, received only #{result.rows.count} rows"
@@ -31,7 +31,7 @@ module DataLoch
       path
     end
 
-    def self.zip_query_results(results, gz)
+    def self.zip_query_results(results, gz, format)
       raise StandardError, 'DB query failed' unless results.respond_to?(:rows)
 
       columns = results.columns.map &:downcase
@@ -42,13 +42,14 @@ module DataLoch
           next if raw.nil? || raw.is_a?(String)
           r[idx] = raw.to_i
         end
-        gz.write r.to_csv
+        gz.write r.to_csv if format == 'CSV'
       end
+      gz.write results.to_json if format == 'JSON'
     end
 
     # Cast BigDecimals and suchlike to integers.
     def self.intified_cols
-      %w(sid section_id ldap_uid parent_income test_score_nbr applied_school_yr)
+      %w(sid section_id ldap_uid parent_income test_score_nbr applied_school_yr saa_seq_nbr)
     end
 
     def self.staging_path(basename)
