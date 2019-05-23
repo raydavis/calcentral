@@ -2,6 +2,8 @@ module EdoOracle
   class Bulk < Connection
     include ActiveRecordHelper
 
+    ADVISING_NOTE_CUTOFF = '2018-10-31 12:58:32'
+
     # See http://www.oracle.com/technetwork/issue-archive/2006/06-sep/o56asktom-086197.html for explanation of
     # query batching with ROWNUM.
     def self.get_batch_enrollments(term_id, batch_number, batch_size)
@@ -156,5 +158,47 @@ module EdoOracle
       safe_query(full_sql, do_not_stringify: true)
     end
 
+    def self.get_advising_notes()
+      sql = <<-SQL
+        SELECT 
+          EMPLID,
+          SAA_NOTE_ID,
+          SAA_SEQ_NBR,
+          ADVISOR_ID,
+          SCI_NOTE_PRIORITY,
+          SAA_NOTE_ITM_LONG,
+          SCC_ROW_ADD_OPRID,
+          SCC_ROW_ADD_DTTM,
+          SCC_ROW_UPD_OPRID,
+          SCC_ROW_UPD_DTTM,
+          SCI_APPT_ID,
+          SAA_NOTE_TYPE,
+          UC_ADV_TYP_DESC,
+          SAA_NOTE_SUBTYPE,
+          UC_ADV_SUBTYP_DESC,
+          SCI_TOPIC
+        FROM SYSADM.BOA_ADVISEE_NOTE00_VW
+        WHERE SCC_ROW_UPD_DTTM > TO_TIMESTAMP('#{ADVISING_NOTE_CUTOFF}', 'YYYY-MM-DD HH24:MI:SS')
+        ORDER BY EMPLID, SAA_NOTE_ID
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
+
+    def self.get_advising_note_attachments()
+      sql = <<-SQL
+        SELECT DISTINCT
+          A.EMPLID,
+          A.SAA_NOTE_ID,
+          A.USERFILENAME,
+          A.ATTACHSYSFILENAME
+        FROM SYSADM.BOA_ADVISEE_NOTE00_VW N
+        JOIN SYSADM.BOA_ADVISE_USERATTACHFILENAME00_VW A
+          ON N.EMPLID = A.EMPLID
+        AND N.SAA_NOTE_ID = A.SAA_NOTE_ID
+        WHERE N.SCC_ROW_UPD_DTTM > TO_TIMESTAMP('#{ADVISING_NOTE_CUTOFF}', 'YYYY-MM-DD HH24:MI:SS' )
+        ORDER BY A.EMPLID, A.SAA_NOTE_ID
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
   end
 end
