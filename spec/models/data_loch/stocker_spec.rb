@@ -111,8 +111,8 @@ describe DataLoch::Stocker do
   describe 'SIS advising notes job' do
     it 'writes zipped notes and attachments results' do
       expect(DataLoch::S3).to receive(:new).and_return (mock_s3 = double)
-      expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/advising-notes/notes', 'tmp/data_loch/notes.gz').and_return true
-      expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/advising-notes/note-attachments', 'tmp/data_loch/note-attachments.gz').and_return true
+      expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/8e8847c1bdf012037ee13bb62da8a5c1-2013-10-10/advising-notes/notes', 'tmp/data_loch/notes.gz').and_return true
+      expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/8e8847c1bdf012037ee13bb62da8a5c1-2013-10-10/advising-notes/note-attachments', 'tmp/data_loch/note-attachments.gz').and_return true
       expect(subject).to receive(:clean_tmp_files).with(['tmp/data_loch/notes.gz', 'tmp/data_loch/note-attachments.gz'])
 
       subject.upload_advising_notes_data(['s3_test'], ['notes', 'note-attachments'])

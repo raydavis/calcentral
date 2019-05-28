@@ -108,7 +108,7 @@ module DataLoch
           end
         end
         job_paths.each do |job, path|
-          s3.upload("sis-sysadm/daily/advising-notes/#{job}", path) if path
+          s3.upload("sis-sysadm/#{get_daily_path}/advising-notes/#{job}", path) if path
         end
       end
       clean_tmp_files(job_paths.values)
