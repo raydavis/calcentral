@@ -71,6 +71,8 @@ module DataLoch
               case job
               when 'demographics'
                 EdoOracle::Bulk.get_demographics sids
+              when 'ethnicities'
+                EdwOracle::Queries.get_student_ethnicities sids
               when 'socio_econ'
                 EdwOracle::Queries.get_socio_econ sids
               when 'applicant_scores'
