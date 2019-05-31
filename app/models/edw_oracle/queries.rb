@@ -59,5 +59,32 @@ module EdwOracle
       safe_query(full_sql, do_not_stringify: true)
     end
 
+    def self.get_student_ethnicities(advisee_sids)
+      batched_sids = advisee_sids.each_slice(1000).to_a
+      full_sql = ''
+      batched_sids.each do |sids|
+        if full_sql.present?
+          full_sql << ' UNION ALL '
+        end
+        sids_in = sids.map {|sid| "'#{sid}'"}.join ','
+        sql = <<-SQL
+          SELECT
+            pp.student_id as sid,
+            uc.ethnic_cd,
+            uc.ethnic_desc,
+            uc.ucb_level1_ethnic_rollup_desc
+          FROM ENTERPRISE.ETS_PERSON_PARTY_D_V pp
+          LEFT JOIN ENTERPRISE.UNDERGRAD_COHORT_COUNTS_M_V uc ON pp.PERSON_PARTY_SK = uc.PP_CURRENT_SK
+          WHERE pp.source_system_cd=4
+            AND pp.student_id IN (#{sids_in})
+        SQL
+        full_sql << sql
+      end
+      full_sql << <<-SQLA
+        ORDER BY sid
+      SQLA
+      safe_query(full_sql, do_not_stringify: true)
+    end
+
   end
 end
