@@ -70,6 +70,8 @@ module EdwOracle
         sql = <<-SQL
           SELECT
             pp.student_id as sid,
+            uc.gender_cd,
+            uc.gender_desc,
             uc.ethnic_cd,
             uc.ethnic_desc,
             uc.ucb_level1_ethnic_rollup_desc

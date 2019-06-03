@@ -15,7 +15,7 @@ namespace :data_loch do
   task :snapshot => :environment do
     term_ids = ENV['TERM_ID']
     advisee_data = []
-    advisee_data.concat ['demographics', 'ethnicities'] if ENV['DEMOGRAPHICS']
+    advisee_data.concat ['demographics'] if ENV['DEMOGRAPHICS']
     advisee_data.concat ['socio_econ', 'applicant_scores'] if ENV['EDW']
     if term_ids.blank? && advisee_data.blank?
       Rails.logger.error 'Neither TERM_ID, DEMOGRAPHICS, nor EDW is specified. Nothing to upload.'
