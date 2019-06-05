@@ -131,7 +131,7 @@ module DataLoch
         logger.info "Testing upload access to #{target}"
         s3.upload('tmp', test_file)
       end
-      logger.info "Access verified for AWS targets #{s3_targets}"
+      logger.info "Access checked for AWS targets #{s3_targets}"
       clean_tmp_files [test_file]
     end
 
