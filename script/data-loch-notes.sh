@@ -7,7 +7,7 @@ source "$HOME/.bash_profile"
 
 cd $( dirname "${BASH_SOURCE[0]}" )/..
 
-LOG=`date +"$PWD/log/data_loch_l_and_s_%Y-%m-%d.log"`
+LOG=`date +"$PWD/log/data_loch_notes_%Y-%m-%d.log"`
 LOGIT="tee -a $LOG"
 
 # Enable rvm and use the correct Ruby version and gem set.

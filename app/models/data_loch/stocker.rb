@@ -94,20 +94,20 @@ module DataLoch
     def upload_advising_notes_data(s3_targets, jobs)
       logger.warn "Starting SIS advising #{jobs} snapshot, targets #{s3_targets}."
       job_paths = Hash[jobs.zip]
-      s3s = s3_from_names s3_targets
-      s3s.each do |s3|
-        jobs.each do |job|
-          job_paths[job] = DataLoch::Zipper.zip_query(job, 'JSON') do
-            case job
-            when 'notes'
-              EdoOracle::Bulk.get_advising_notes
-            when 'note-attachments'
-              EdoOracle::Bulk.get_advising_note_attachments
-            else
-              logger.error "Got unknown job name #{job}!"
-            end
+      jobs.each do |job|
+        job_paths[job] = DataLoch::Zipper.zip_query(job, 'JSON') do
+          case job
+          when 'notes'
+            EdoOracle::Bulk.get_advising_notes
+          when 'note-attachments'
+            EdoOracle::Bulk.get_advising_note_attachments
+          else
+            logger.error "Got unknown job name #{job}!"
           end
         end
+      end
+      s3s = s3_from_names s3_targets
+      s3s.each do |s3|
         job_paths.each do |job, path|
           s3.upload("sis-sysadm/#{get_daily_path}/advising-notes/#{job}", path) if path
         end
