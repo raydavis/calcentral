@@ -74,7 +74,9 @@ module EdwOracle
             uc.gender_desc,
             uc.ethnic_cd,
             uc.ethnic_desc,
-            uc.ucb_level1_ethnic_rollup_desc
+            uc.short_ethnic_desc,
+            uc.ucb_level1_ethnic_rollup_desc,
+            uc.ucb_level2_ethnic_rollup_desc
           FROM ENTERPRISE.ETS_PERSON_PARTY_D_V pp
           LEFT JOIN ENTERPRISE.UNDERGRAD_COHORT_COUNTS_M_V uc ON pp.PERSON_PARTY_SK = uc.PP_CURRENT_SK
           WHERE pp.source_system_cd=4

@@ -13,7 +13,21 @@ module DataLoch
       path
     end
 
-    def self.zip_query_batched(base_path, format='CSV')
+    def self.zip_query_sliced_matches(base_path, match_vals, format='CSV', slice_size=1000)
+      """Handle WHERE...IN queries which need to be split for acceptable DB response times."""
+      path = staging_path "#{base_path}.gz"
+      match_slices = match_vals.each_slice(slice_size).to_a
+      Zlib::GzipWriter.open(path) do |gz|
+        match_slices.each do |slice|
+          result = yield(slice)
+          zip_query_results(result, gz, format)
+        end
+      end
+      path
+    end
+
+    def self.zip_query_with_batched_results(base_path, format='CSV')
+      """Handle queries whose results would overload memory if transferred in one batch."""
       path = staging_path "#{base_path}.gz"
       batch = 0
       Zlib::GzipWriter.open(path) do |gz|
@@ -33,7 +47,6 @@ module DataLoch
 
     def self.zip_query_results(results, gz, format)
       raise StandardError, 'DB query failed' unless results.respond_to?(:rows)
-
       columns = results.columns.map &:downcase
       intified_idxs = intified_cols.map {|name| columns.index name}.compact
       results.rows.each do |r|

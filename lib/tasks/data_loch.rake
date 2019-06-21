@@ -16,9 +16,10 @@ namespace :data_loch do
     term_ids = ENV['TERM_ID']
     advisee_data = []
     advisee_data.concat ['demographics'] if ENV['DEMOGRAPHICS']
-    advisee_data.concat ['socio_econ', 'applicant_scores'] if ENV['EDW']
+    advisee_data.concat ['edw_demographics'] if ENV['EDW_DEMOGRAPHICS']
+    advisee_data.concat ['socio_econ', 'applicant_scores'] if ENV['APPLICANT']
     if term_ids.blank? && advisee_data.blank?
-      Rails.logger.error 'Neither TERM_ID, DEMOGRAPHICS, nor EDW is specified. Nothing to upload.'
+      Rails.logger.error 'Neither TERM_ID, DEMOGRAPHICS, nor APPLICANT is specified. Nothing to upload.'
     end
     if term_ids.present?
       term_ids = term_ids.split(',')

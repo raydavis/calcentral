@@ -47,7 +47,7 @@ module DataLoch
           EdoOracle::Bulk.get_courses(term_id)
         end
         s3s.each {|s3| s3.upload("#{parent_path}/courses", courses_path) }
-        enrollments_path = DataLoch::Zipper.zip_query_batched "enrollments-#{term_id}" do |batch, size|
+        enrollments_path = DataLoch::Zipper.zip_query_with_batched_results "enrollments-#{term_id}" do |batch, size|
           EdoOracle::Bulk.get_batch_enrollments(term_id, batch, size)
         end
         s3s.each {|s3| s3.upload("#{parent_path}/enrollments", enrollments_path) }
@@ -68,16 +68,23 @@ module DataLoch
         sids = s3.load_advisee_sids()
         if sids != previous_sids
           jobs.each do |job|
-            job_paths[job] = DataLoch::Zipper.zip_query job do
-              case job
-              when 'demographics'
-                EdwOracle::Queries.get_student_ethnicities sids
-              when 'socio_econ'
-                EdwOracle::Queries.get_socio_econ sids
-              when 'applicant_scores'
-                EdwOracle::Queries.get_applicant_scores sids
-              else
-                Rails.logger.error "Got unknown job name #{job}!"
+            if job == 'demographics'
+              # When faced with a large SELECT clause, SISEDO.PERSONV00_VW tends to faint dead away.
+              job_paths[job] = DataLoch::Zipper.zip_query_sliced_matches(job, sids) do |subset|
+                EdoOracle::Bulk.get_demographics subset
+              end
+            else
+              job_paths[job] = DataLoch::Zipper.zip_query job do
+                case job
+                when 'edw_demographics'
+                  EdwOracle::Queries.get_student_ethnicities sids
+                when 'socio_econ'
+                  EdwOracle::Queries.get_socio_econ sids
+                when 'applicant_scores'
+                  EdwOracle::Queries.get_applicant_scores sids
+                else
+                  Rails.logger.error "Got unknown job name #{job}!"
+                end
               end
             end
           end
