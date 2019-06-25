@@ -136,6 +136,7 @@ module EdoOracle
             p.person_key AS sid,
             p.gender_genderofrecord_descr AS gender_of_record,
             p.gender_genderidentity_descr AS gender_identity,
+            p.usa_visa_type_code,
             ethn.ethnicity_group_descr, ethn.ethnicity_detail_descr,
             inter.foreigncountry_descr
           FROM SISEDO.PERSONV00_VW p
