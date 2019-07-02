@@ -21,6 +21,28 @@ module DataLoch
       "daily/#{digest}-#{today}"
     end
 
+    def upload_advisor_relationships(s3_targets)
+      logger.warn "Starting advisor relationships snapshot, targets #{s3_targets}."
+      s3s = s3_from_names s3_targets
+      instructor_advisor_path = DataLoch::Zipper.zip_query "instructor-advisor-map" do
+        EdoOracle::Bulk.get_instructor_advisor_relationships
+      end
+      s3s.each {|s3| s3.upload("sis-sysadm/#{get_daily_path}/advisors/instructor-advisor-map", instructor_advisor_path) }
+
+      student_advisor_path = DataLoch::Zipper.zip_query "student-advisor-map" do
+        EdoOracle::Bulk.get_student_advisor_relationships
+      end
+      s3s.each {|s3| s3.upload("sis-sysadm/#{get_daily_path}/advisors/student-advisor-map", student_advisor_path) }
+
+      advisor_note_permissions_path = DataLoch::Zipper.zip_query "advisor-note-permissions" do
+        EdoOracle::Bulk.get_advisor_note_permissions
+      end
+      s3s.each {|s3| s3.upload("sis-sysadm/#{get_daily_path}/advisors/advisor-note-permissions", advisor_note_permissions_path) }
+
+      clean_tmp_files([instructor_advisor_path, student_advisor_path, advisor_note_permissions_path])
+      logger.info "Advisor snapshots complete."
+    end
+
     def upload_l_and_s_students(s3_targets)
       logger.warn "Starting L&S students snapshot, targets #{s3_targets}."
       s3s = s3_from_names s3_targets

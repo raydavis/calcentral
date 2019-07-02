@@ -143,4 +143,28 @@ describe DataLoch::Stocker do
       expect(attachments[0]['attachsysfilename']).to eq '11667051_00005_1.pdf'
     end
   end
+
+  describe 'SIS advisor relationships job' do
+    it 'writes zipped instructor-advisor, student-advisor, and advisor note permissions results' do
+      expect(DataLoch::S3).to receive(:new).and_return (mock_s3 = double)
+      expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/8e8847c1bdf012037ee13bb62da8a5c1-2013-10-10/advisors/instructor-advisor-map', 'tmp/data_loch/instructor-advisor-map.gz').and_return true
+      expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/8e8847c1bdf012037ee13bb62da8a5c1-2013-10-10/advisors/student-advisor-map', 'tmp/data_loch/student-advisor-map.gz').and_return true
+      expect(mock_s3).to receive(:upload).with('sis-sysadm/daily/8e8847c1bdf012037ee13bb62da8a5c1-2013-10-10/advisors/advisor-note-permissions', 'tmp/data_loch/advisor-note-permissions.gz').and_return true
+      expect(subject).to receive(:clean_tmp_files).with(['tmp/data_loch/instructor-advisor-map.gz', 'tmp/data_loch/student-advisor-map.gz', 'tmp/data_loch/advisor-note-permissions.gz'])
+
+      subject.upload_advisor_relationships(['s3_test'])
+      
+      instructor_advisor_csv = unzipped('instructor-advisor-map')
+      expect(instructor_advisor_csv).to have(1).items
+      expect(instructor_advisor_csv[0]).to eq '303123456,123456,1.0,COLL,College Advisor,ADV,Advisor Only,UCLS,Undergrad Letters & Science,25000U,Letters & Sci Undeclared UG, , '
+
+      student_advisor_csv = unzipped('student-advisor-map')
+      expect(student_advisor_csv).to have(2).items
+      expect(student_advisor_csv[0]).to eq '11667051,61889,303123456,MAJ,Major Advisor,UCLS,Undergrad Letters & Science,252A9U,Media Studies BA'
+
+      advisor_note_csv = unzipped('advisor-note-permissions')
+      expect(advisor_note_csv).to have(3).items
+      expect(advisor_note_csv[0]).to eq '123456,303123456,UC_CS_AA_CURRICULAR_ADVISOR,0.0'
+    end
+  end
 end
