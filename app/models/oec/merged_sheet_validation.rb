@@ -67,7 +67,11 @@ module Oec
             errors.add "END_DATE #{confirmation['END_DATE']} does not match term code #{@term_code}" unless confirmation['END_DATE'].end_with? @term_code[0..3]
           end
           errors.add "Unexpected MODULAR_COURSE value #{confirmation['MODULAR_COURSE']}" unless confirmation['MODULAR_COURSE'].blank? || confirmation['MODULAR_COURSE'] == 'Y'
-          validate_and_add(courses, confirmation, %w(COURSE_ID))
+          course_row = confirmation.to_h
+          if confirmation['DEPT_FORM'].present? && confirmation['EVALUATION_TYPE'].present?
+            course_row['QB_MAPPING'] = "#{confirmation['DEPT_FORM']}-#{confirmation['EVALUATION_TYPE']}"
+          end
+          validate_and_add(courses, course_row, %w(COURSE_ID))
         end
 
         if confirmation['LDAP_UID'].present?

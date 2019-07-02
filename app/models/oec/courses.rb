@@ -20,6 +20,7 @@ module Oec
         START_DATE
         END_DATE
         CANVAS_COURSE_ID
+        QB_MAPPING
       )
     end
 

@@ -264,6 +264,14 @@ describe Oec::PublishTask do
     end
   end
 
+  describe 'QB_MAPPING column' do
+    let(:local_write) { 'Y' }
+    it 'concatenates DEPT_FORM and EVALUATION_TYPE' do
+      task.run
+      courses.each { |row| expect(row['QB_MAPPING']).to eq row['DEPT_FORM'] + '-' + row['EVALUATION_TYPE'] }
+    end
+  end
+
   describe 'integrity validation' do
     let(:local_write) { 'Y' }
     before do
