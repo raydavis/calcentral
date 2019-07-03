@@ -156,7 +156,7 @@ describe DataLoch::Stocker do
       
       instructor_advisor_csv = unzipped('instructor-advisor-map')
       expect(instructor_advisor_csv).to have(1).items
-      expect(instructor_advisor_csv[0]).to eq '303123456,123456,1.0,COLL,College Advisor,ADV,Advisor Only,UCLS,Undergrad Letters & Science,25000U,Letters & Sci Undeclared UG, , '
+      expect(instructor_advisor_csv[0]).to eq '303123456,123456,1,COLL,College Advisor,ADV,Advisor Only,UCLS,Undergrad Letters & Science,25000U,Letters & Sci Undeclared UG, , '
 
       student_advisor_csv = unzipped('student-advisor-map')
       expect(student_advisor_csv).to have(2).items
@@ -164,7 +164,7 @@ describe DataLoch::Stocker do
 
       advisor_note_csv = unzipped('advisor-note-permissions')
       expect(advisor_note_csv).to have(3).items
-      expect(advisor_note_csv[0]).to eq '123456,303123456,UC_CS_AA_CURRICULAR_ADVISOR,0.0'
+      expect(advisor_note_csv[0]).to eq '123456,303123456,UC_CS_AA_CURRICULAR_ADVISOR,0'
     end
   end
 end
