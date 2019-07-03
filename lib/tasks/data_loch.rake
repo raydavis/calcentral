@@ -11,6 +11,11 @@ namespace :data_loch do
     return targets
   end
 
+  desc 'Upload student-advisor and instructor-advisor relationship mappings to data loch S3'
+  task :advisors => :environment do
+    DataLoch::Stocker.new().upload_advisor_relationships(s3_targets)
+  end
+
   desc 'Upload course, enrollment, and advisee data snapshots to data loch S3 (TERM_ID = 2XXX,2XXX...)'
   task :snapshot => :environment do
     term_ids = ENV['TERM_ID']

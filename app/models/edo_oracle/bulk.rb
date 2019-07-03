@@ -193,5 +193,66 @@ module EdoOracle
       SQL
       safe_query(sql, do_not_stringify: true)
     end
+
+    def self.get_instructor_advisor_relationships()
+      sql = <<-SQL
+        SELECT 
+          I.ADVISOR_ID,
+          I.CAMPUS_ID,
+          I.INSTRUCTOR_ADISOR_NUMBER AS INSTRUCTOR_ADVISOR_NBR,
+          I.ADVISOR_TYPE,
+          I.ADVISOR_TYPE_DESCR,
+          I.INSTRUCTOR_TYPE,
+          I.INSTRUCTOR_TYPE_DESCR,
+          I.ACADEMIC_PROGRAM,
+          I.ACADEMIC_PROGRAM_DESCR,
+          I.ACADEMIC_PLAN,
+          I.ACADEMIC_PLAN_DESCR,
+          I.ACADEMIC_SUB_PLAN,
+          I.ACADEMIC_SUB_PLAN_DESCR
+        FROM SYSADM.BOA_INSTRUCTOR_ADVISOR_VW I
+        WHERE I.INSTITUTION = 'UCB01'
+        AND I.ACADEMIC_CAREER = 'UGRD'
+        AND I.EFFECTIVE_STATUS = 'A'
+        AND I.EFFECTIVE_DATE = (
+            SELECT MAX(I1.EFFECTIVE_DATE)
+            FROM SYSADM.BOA_INSTRUCTOR_ADVISOR_VW I1
+            WHERE I1.ADVISOR_ID = I.ADVISOR_ID
+            AND I1.INSTRUCTOR_ADISOR_NUMBER = I.INSTRUCTOR_ADISOR_NUMBER
+        )
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
+
+    def self.get_student_advisor_relationships()
+      sql = <<-SQL
+        SELECT 
+          S.STUDENT_ID,
+          S.CAMPUS_ID,
+          S.ADVISOR_ID,
+          S.ADVISOR_ROLE,
+          S.ADVISOR_ROLE_DESCR,
+          S.ACADEMIC_PROGRAM,
+          S.ACADEMIC_PROGRAM_DESCR,
+          S.ACADEMIC_PLAN,
+          S.ACADEMIC_PLAN_DESCR
+        FROM SYSADM.BOA_STUDENT_ADVISOR_VW S
+        WHERE S.INSTITUTION = 'UCB01'
+        AND S.ACADEMIC_CAREER = 'UGRD'
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
+
+    def self.get_advisor_note_permissions()
+      sql = <<-SQL
+        SELECT 
+          A.USER_ID,
+          A.CS_ID,
+          A.PERMISSION_LIST,
+          A.DISPLAY_ONLY
+        FROM SYSADM.BOA_ADV_NOTES_ACCESS_VW A
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
   end
 end
