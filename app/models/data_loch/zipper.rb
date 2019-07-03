@@ -62,7 +62,7 @@ module DataLoch
 
     # Cast BigDecimals and suchlike to integers.
     def self.intified_cols
-      %w(sid section_id ldap_uid parent_income test_score_nbr applied_school_yr saa_seq_nbr)
+      %w(sid section_id ldap_uid parent_income test_score_nbr applied_school_yr saa_seq_nbr instructor_advisor_nbr display_only)
     end
 
     def self.staging_path(basename)
