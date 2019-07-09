@@ -17,7 +17,7 @@ source .rvmrc
 export RAILS_ENV=${RAILS_ENV:-production}
 export LOGGER_STDOUT=only
 export LOGGER_LEVEL=INFO
-export JRUBY_OPTS="--dev -J-Xmx1024m"
+export JRUBY_OPTS="--dev"
 
 echo | $LOGIT
 echo "------------------------------------------" | $LOGIT
