@@ -39,7 +39,12 @@ module DataLoch
       end
       s3s.each {|s3| s3.upload("sis-sysadm/#{get_daily_path}/advisors/advisor-note-permissions", advisor_note_permissions_path) }
 
-      clean_tmp_files([instructor_advisor_path, student_advisor_path, advisor_note_permissions_path])
+      academic_plan_owners_path = DataLoch::Zipper.zip_query "academic-plan-owners" do
+        EdoOracle::Bulk.get_academic_plan_owners
+      end
+      s3s.each {|s3| s3.upload("sis-sysadm/#{get_daily_path}/advisors/academic-plan-owners", academic_plan_owners_path) }
+
+      clean_tmp_files([instructor_advisor_path, student_advisor_path, advisor_note_permissions_path, academic_plan_owners_path])
       logger.info "Advisor snapshots complete."
     end
 

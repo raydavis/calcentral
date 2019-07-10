@@ -254,5 +254,23 @@ module EdoOracle
       SQL
       safe_query(sql, do_not_stringify: true)
     end
+
+    def self.get_academic_plan_owners()
+      sql = <<-SQL
+        SELECT DISTINCT 
+          ACADPLAN_CODE,
+          ACADPLAN_DESCR,
+          ACADPLAN_TYPE_CODE,
+          ACADPLAN_TYPE_DESCR,
+          ACADPLAN_OWNEDBY_CODE, 
+          ACADPLAN_OWNEDBY_DESCR
+          ACADPLAN_OWNED_BY_PCT,
+          ACADPROG_CODE,
+          ACADPROG_DESCR
+        FROM SISEDO.STUDENT_PLANV01_VW
+        WHERE ACADCAREER_CODE = 'UGRD'
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
   end
 end
