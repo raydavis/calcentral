@@ -32,7 +32,11 @@ canvas_proxy:
   # Set to "true" when Canvas allows it.
   delete_bad_emails: false
 
+data_loch:
+  staging_directory: '/home/app_calcentral/calcentral/tmp/data_loch'
+
 background_threads:
   min: 10,
   max: 10,
   max_queue: 0  # unbounded work queue
+
