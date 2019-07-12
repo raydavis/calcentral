@@ -16,31 +16,5 @@ describe Webcast::Recordings do
         expect(law_2723[:recordings]).to have(12).items
       end
     end
-    context 'when integrating with a CS-only SIS source which lacks legacy CCNs' do
-      let(:use_legacy_ccns) { false }
-      # Currently, only 3 of the 25 courses in the fake JSON feed are CS-era.
-      # This test code only stubs legacy-CCN translations for 2 courses,
-      # which means the other 23 legacy courses should have nil CS Section ID
-      # values and be stripped out of the final parsed feed.
-      before do
-        allow(Berkeley::LegacyTerms).to receive(:legacy_ccns_to_section_ids) do |cs_term_id, legacy_ccns|
-          expect(cs_term_id).to be < '2168'
-          if cs_term_id == '2142'
-            expect(legacy_ccns).to include('71859', '74163')
-            {'71859' => '66671859', '74163' => '66674163'}
-          else
-            {}
-          end
-        end
-      end
-      it 'returns CS-mapped playlists' do
-        expect(recordings[:courses]).to have(5).items
-        ['2014-B-66671859', '2014-B-66671859'].each do |legacy_key|
-          course_captures = recordings[:courses][legacy_key]
-          expect(course_captures[:youtube_playlist]).to be_present
-          expect(course_captures[:recordings]).to be_present
-        end
-      end
-    end
   end
 end

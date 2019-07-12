@@ -94,22 +94,41 @@ module Webcast
       if @term_yr && @term_cd
         media_per_ccn = Webcast::CourseMedia.new(@term_yr, @term_cd, @ccn_list, @options).get_feed
         if media_per_ccn.any?
-          courses = @academics.courses_list_from_ccns(@term_yr, @term_cd, media_per_ccn.keys)
-          courses.each do |course|
-            course[:classes].each do |next_class|
-              next_class[:sections].each do |section|
-                ccn = section[:ccn]
-                section_metadata = {
-                  termYr: @term_yr,
-                  termCd: @term_cd,
-                  ccn: ccn,
-                  deptName: next_class[:dept],
-                  catalogId: next_class[:courseCatalog],
-                  instructionFormat: section[:instruction_format],
-                  sectionNumber: section[:section_number]
-                }
-                media = media_per_ccn[ccn.to_i]
-                feed << media.merge(section_metadata) if media
+          ccn_list = media_per_ccn.keys
+          if !Settings.features.allow_legacy_fallback && Berkeley::TermCodes.legacy?(@term_yr, @term_cd)
+            legacy_sections = Berkeley::LegacyTerms.get_sections_from_legacy_ccns(@term_yr, @term_cd, ccn_list)
+            legacy_sections.each do |section|
+              ccn = section['ccn']
+              section_metadata = {
+                termYr: @term_yr,
+                termCd: @term_cd,
+                ccn: ccn,
+                deptName: section['dept_name'],
+                catalogId: section['catalog_id'],
+                instructionFormat: section['instruction_format'],
+                sectionNumber: section['section_num']
+              }
+              media = media_per_ccn[ccn]
+              feed << media.merge(section_metadata)
+            end
+          else
+            courses = @academics.courses_list_from_ccns(@term_yr, @term_cd, media_per_ccn.keys)
+            courses.each do |course|
+              course[:classes].each do |next_class|
+                next_class[:sections].each do |section|
+                  ccn = section[:ccn]
+                  section_metadata = {
+                    termYr: @term_yr,
+                    termCd: @term_cd,
+                    ccn: ccn,
+                    deptName: next_class[:dept],
+                    catalogId: next_class[:courseCatalog],
+                    instructionFormat: section[:instruction_format],
+                    sectionNumber: section[:section_number]
+                  }
+                  media = media_per_ccn[ccn.to_i]
+                  feed << media.merge(section_metadata) if media
+                end
               end
             end
           end
