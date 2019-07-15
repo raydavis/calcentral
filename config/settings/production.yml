@@ -28,12 +28,12 @@ edodb:
   timeout: 5000
 
 canvas_proxy:
-  export_directory: '/home/app_calcentral/calcentral/tmp/canvas'
+  export_directory: '/home/app_junction/calcentral/tmp/canvas'
   # Set to "true" when Canvas allows it.
   delete_bad_emails: false
 
 data_loch:
-  staging_directory: '/home/app_calcentral/calcentral/tmp/data_loch'
+  staging_directory: '/home/app_junction/calcentral/tmp/data_loch'
 
 background_threads:
   min: 10,
