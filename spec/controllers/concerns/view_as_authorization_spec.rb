@@ -17,12 +17,6 @@ describe ViewAsAuthorization do
         expect{ subject }.to raise_error
       end
     end
-    context 'advisor' do
-      let(:is_advisor) { true }
-      it 'should pass' do
-        expect{ subject }.to_not raise_error
-      end
-    end
     context 'super-user' do
       let(:can_view_as) { true }
       it 'should pass' do

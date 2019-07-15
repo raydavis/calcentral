@@ -1,6 +1,5 @@
 class BootstrapController < ApplicationController
   include ActiveRecordHelper
-  include AllowDelegateViewAs
   include AllowLti
   before_filter :get_settings, :initialize_calcentral_config
   before_filter :check_lti_only

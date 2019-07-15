@@ -15,13 +15,6 @@ class SearchUsersController < ApplicationController
     render json: { users: prepare_to_render(users) }.to_json
   end
 
-  def by_id_or_name
-    opts = user_search_constraints
-    id_or_name = params.require 'input'
-    users = User::SearchUsersByName.new.search_by(id_or_name, opts)
-    render json: { users: prepare_to_render(users.take(limit)) }.to_json
-  end
-
   private
 
   def prepare_to_render(users)

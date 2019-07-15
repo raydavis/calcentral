@@ -1,6 +1,5 @@
 class CanvasSiteCreationController < ApplicationController
   include AllowLti
-  include DisallowAdvisorViewAs
 
   before_filter :api_authenticate
   rescue_from StandardError, with: :handle_api_exception

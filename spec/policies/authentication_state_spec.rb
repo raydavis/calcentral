@@ -119,16 +119,6 @@ describe AuthenticationState do
         expect(subject.authenticated_as_delegate?).to be false
       end
     end
-    context 'when in advisor-view-as mode' do
-      let(:user_id) { random_id }
-      let(:fake_session) {{
-        'user_id' => user_id,
-        SessionKey.original_advisor_user_id => random_id
-      }}
-      it 'should get student of advisor user' do
-        expect(subject).to be_authenticated_as_advisor
-      end
-    end
     context 'when only authenticated from an external app' do
       let(:fake_session) {{
         'user_id' => random_id,

@@ -1,6 +1,5 @@
 class CanvasRostersController < RostersController
   include AllowLti
-  include DisallowAdvisorViewAs
   include ClassLogger
   include SpecificToCourseSite
 

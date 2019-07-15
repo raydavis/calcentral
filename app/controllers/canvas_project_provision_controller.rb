@@ -1,6 +1,5 @@
 class CanvasProjectProvisionController < ApplicationController
   include AllowLti
-  include DisallowAdvisorViewAs
   include ClassLogger
 
   before_filter :api_authenticate

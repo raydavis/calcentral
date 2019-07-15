@@ -1,5 +1,4 @@
 class UserController < ApplicationController
-  include AllowDelegateViewAs
   include AllowLti
 
   def am_i_logged_in
