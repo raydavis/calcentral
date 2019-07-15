@@ -1,5 +1,4 @@
 module ViewAsAuthorization
-  include AdvisorAuthorization
 
   def render_403(error)
     if error.respond_to? :message
@@ -11,6 +10,6 @@ module ViewAsAuthorization
 
   def authorize_query_stored_users(current_user)
     return if current_user.directly_authenticated? && current_user.policy.can_view_as?
-    require_advisor current_user.user_id
+    raise Pundit::NotAuthorizedError.new("User (UID: #{uid}) is not authorized to View As")
   end
 end

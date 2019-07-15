@@ -1,5 +1,4 @@
 class ConfigController < ApplicationController
-  include AllowDelegateViewAs
   include AllowLti
   before_filter :get_settings, :initialize_calcentral_config
 

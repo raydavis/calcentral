@@ -8,7 +8,7 @@
 ###############################################################################################
 
 # This example is intended to be used with let(:make_request) which defines the controller method call
-# for the method that is being tested. For example, see spec/controllers/my_academics_controller_spec.rb
+# for the method that is being tested.
 shared_examples 'a user authenticated api endpoint' do
   context 'when no user session present' do
     before { session['user_id'] = nil }
@@ -41,19 +41,6 @@ shared_examples 'an unauthorized endpoint for delegates' do
     make_request
     expect(response.status).to eq 403
     expect(response.body).to eq ''
-  end
-end
-
-shared_examples 'an unauthorized endpoint for users in advisor-view-as mode' do
-  before do
-    session['user_id'] = random_id unless session['user_id']
-    session[SessionKey.original_advisor_user_id] = random_id
-  end
-  it 'denies all access' do
-    make_request
-    # Controller might rescue_from authorization failure then return 500 status
-    expect(response.status).to be >= 403
-    expect(response.body.blank? || JSON.parse(response.body)['error']).to be_truthy
   end
 end
 

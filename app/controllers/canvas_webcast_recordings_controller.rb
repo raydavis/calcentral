@@ -1,6 +1,5 @@
 class CanvasWebcastRecordingsController < ApplicationController
   include AllowLti
-  include DisallowAdvisorViewAs
   include SpecificToCourseSite
 
   before_filter :api_authenticate

@@ -43,27 +43,6 @@ describe CanvasLtiController do
     end
   end
 
-  describe 'advisor-view-as restriction' do
-    before do
-      allow(Settings.features).to receive(:reauthentication).and_return false
-    end
-    context 'when the user is logged into CalCentral' do
-      let(:make_request) {
-        session['user_id'] = lti_values['canvas_user_login_id']
-        subject.send(:authenticate_by_lti, lti)
-        get action
-      }
-      context 'site creation' do
-        let(:action) { :lti_site_creation }
-        it_behaves_like 'an unauthorized endpoint for users in advisor-view-as mode'
-      end
-      context 'manage sections' do
-        let(:action) { :lti_course_manage_official_sections }
-        it_behaves_like 'an unauthorized endpoint for users in advisor-view-as mode'
-      end
-    end
-  end
-
   describe 'authenticate_by_lti' do
     context 'when the user is not logged into CalCentral' do
       it_behaves_like 'an LTI authentication'

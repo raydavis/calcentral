@@ -46,45 +46,4 @@ describe SearchUsersController do
     end
   end
 
-  describe '#by_id by advisor' do
-    let(:is_superuser) { false }
-    before do
-      # Advisor
-      expect(User::AggregatedAttributes).to receive(:new).with(session['user_id']).and_return (advisor_proxy = double)
-      expect(advisor_proxy).to receive(:get_feed).and_return({ roles: { advisor: is_advisor } })
-      # Student
-      allow(User::AggregatedAttributes).to receive(:new).with(id).and_return (student_proxy = double)
-      allow(student_proxy).to receive(:get_feed).and_return({ roles: { student: is_student } })
-    end
-
-    context 'not an advisor' do
-      let(:is_advisor) { false }
-      let(:is_student) { true }
-      it 'should raise exception' do
-        get :by_id, id: id
-        expect(response.status).to eq 403
-        expect(JSON.parse(response.body)['users']).to be_nil
-      end
-    end
-    context 'advisor' do
-      let(:is_advisor) { true }
-      context 'advisor finds a student' do
-        let(:is_student) { true }
-        it 'finds one matching user' do
-          get :by_id, id: id
-          users = JSON.parse(response.body)['users']
-          expect(users).to have(1).item
-        end
-      end
-      context 'advisor finds a non-student' do
-        let(:is_student) { false }
-        it 'should return nothing' do
-          get :by_id, id: id
-          users = JSON.parse(response.body)['users']
-          expect(users).to be_blank
-        end
-      end
-    end
-  end
-
 end
