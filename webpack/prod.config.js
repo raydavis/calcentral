@@ -18,8 +18,7 @@ module.exports = webpackMerge(baseConfig, {
       exclude: [
         path.resolve(__dirname, '../src/base.html'),
         path.resolve(__dirname, '../src/bcourses_embedded.html'),
-        path.resolve(__dirname, '../src/index-junction.html'), 
-        path.resolve(__dirname, '../src/index-main.html')
+        path.resolve(__dirname, '../src/index-junction.html')
       ],
       use: [
         { loader: 'ngtemplate-loader',

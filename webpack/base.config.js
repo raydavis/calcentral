@@ -10,7 +10,6 @@ let paths = {
     templates: {
       base: './src/base.html',
       bCoursesEmbedded: fs.readFileSync('./src/bcourses_embedded.html'),
-      index: fs.readFileSync('./src/index-main.html'),
       indexJunction: fs.readFileSync('./src/index-junction.html')
     }
   },
@@ -22,7 +21,6 @@ let paths = {
     },
     templates: {
       bCoursesEmbedded: './bcourses_embedded.html',
-      index: './index-main.html',
       indexJunction: './index-junction.html'
     }
   }
@@ -33,7 +31,6 @@ let pathsToClean = [
   paths.public.assets.images,
   paths.public.assets.javascripts,
   paths.public.templates.bCoursesEmbedded,
-  paths.public.templates.index,
   paths.public.templates.indexJunction
 ];
 
@@ -84,12 +81,6 @@ module.exports = {
       filename: paths.public.templates.indexJunction,
       inject: false,
       injectedHtml: paths.source.templates.indexJunction,
-      template: paths.source.templates.base
-    }),
-    new htmlWebpackPlugin({
-      filename: paths.public.templates.index,
-      inject: false,
-      injectedHtml: paths.source.templates.index,
       template: paths.source.templates.base
     })
   ]
