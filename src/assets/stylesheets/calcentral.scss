@@ -52,22 +52,7 @@
 @import "act_as";
 
 // Academics
-@import "academic_summary";
-@import "academics";
-@import "degree_progress";
-@import "degrees_conferred";
-@import "enrollment_card";
-@import "enrollment_verification";
-@import "exam_schedule";
-@import "exam_results";
-@import "higher_degree_committees";
-@import "myadvising";
-@import "profile";
 @import "roster";
-@import "status_holds";
-
-// Textbooks
-@import "textbooks";
 
 // Webcasts
 @import "webcast";
@@ -76,18 +61,7 @@
 @import "oec";
 
 // Dashboard
-@import "sir_item";
-@import "classes";
-@import "mycalendar";
-@import "activities";
-@import "tasks";
 @import "google_reminder";
-@import "user_search";
-@import "advising_resources";
-@import "new_admit_resources";
-
-// Campus
-@import "campus";
 
 // Canvas external apps
 // See also 'roster' above for shared CalCentral/Canvas Roster
@@ -104,41 +78,10 @@
 @import "canvas_site_creation";
 @import "canvas_site_mailing_list";
 
-// My Finances
-@import "myfinances";
-
-// Finaid
-@import "finaid";
-@import "finaid_awards";
-@import "finaid_coa";
-@import "finaid_compare_awards";
-@import "finaid_summary";
-@import "finaid_permissions";
-@import "finaid_profile";
-@import "finaid_table";
-@import "finaid_title4";
-@import "finaid_housing";
-@import "loan_history_page";
-@import "loan_history_summary";
-
-// Profile
-@import "profile_page";
 @import "profile_bconnected";
-@import "profile_image";
-
-// Advising User Overview
-@import "student_success";
-@import "transfer_credit";
-@import "academic_plan";
-
-// Delegated Access
-@import "delegate_welcome";
 
 // Toolbox
 @import "toolbox";
-
-// CalCentral Updates
-@import "calcentral_update";
 
 // Splash
 @import "splash";
