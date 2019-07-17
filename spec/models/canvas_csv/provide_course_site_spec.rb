@@ -274,8 +274,8 @@ describe CanvasCsv::ProvideCourseSite do
     end
 
     it 'lets admins specify CCNs directly' do
-      fake_formatter = instance_double(MyAcademics::Teaching)
-      expect(MyAcademics::Teaching).to receive(:new).with(uid).and_return(fake_formatter)
+      fake_formatter = instance_double(Berkeley::Teaching)
+      expect(Berkeley::Teaching).to receive(:new).with(uid).and_return(fake_formatter)
       expect(fake_formatter).to receive(:courses_list_from_ccns).and_return(@filtered_courses_list)
       subject.import_data['is_admin_by_ccns'] = true
       expect(subject).to_not receive(:candidate_courses_list)
@@ -683,7 +683,7 @@ describe CanvasCsv::ProvideCourseSite do
         ]
       }
       allow(subject).to receive(:current_terms).and_return(current_terms)
-      allow_any_instance_of(MyAcademics::Teaching).to receive(:merge) do |data|
+      allow_any_instance_of(Berkeley::Teaching).to receive(:merge) do |data|
         data.merge! fake_feed
       end
       result = subject.candidate_courses_list
@@ -1149,12 +1149,6 @@ describe CanvasCsv::ProvideCourseSite do
     it 'clears course sections cache' do
       expect_any_instance_of(Canvas::CourseSections).to receive(:sections_list).with(true).and_return(statusCode: 200, body: [])
       allow(subject).to receive(:expire_instructor_sites_cache).and_return(nil)
-      subject.refresh_sections_cache(canvas_course_id)
-    end
-
-    it 'clears instructors merged academics cache' do
-      allow_any_instance_of(Canvas::CourseSections).to receive(:sections_list).and_return(statusCode: 200, body: [])
-      expect(subject).to receive(:expire_instructor_sites_cache).and_return(nil)
       subject.refresh_sections_cache(canvas_course_id)
     end
   end

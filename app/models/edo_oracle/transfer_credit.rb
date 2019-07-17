@@ -117,6 +117,8 @@ module EdoOracle
     end
 
     def law_student?
+      roles = MyAcademics::MyAcademicRoles.new(@uid).get_feed
+      !!roles[:current]['law']
     end
 
     private

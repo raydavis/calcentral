@@ -74,8 +74,8 @@ describe CanvasLti::CourseProvision do
         find_term: {yr: '2014', cd: 'B'}
       )
     end
-    allow(MyAcademics::Teaching).to receive(:new).and_return(
-      instance_double(MyAcademics::Teaching, {courses_list_from_ccns: by_ccns_course_list})
+    allow(Berkeley::Teaching).to receive(:new).and_return(
+      instance_double(Berkeley::Teaching, {courses_list_from_ccns: by_ccns_course_list})
     )
   end
 
@@ -280,9 +280,9 @@ describe CanvasLti::CourseProvision do
     subject { CanvasLti::CourseProvision.new(instructor_id, canvas_course_id: canvas_course_id) }
     it 'should return Canvas section IDs that are not in the list of authorized campus sections' do
       missing_sections = [{term_yr: '2013', term_cd: 'C', ccn: random_ccn}]
-      fake_formatter = instance_double(MyAcademics::Teaching)
+      fake_formatter = instance_double(Berkeley::Teaching)
       expect(fake_formatter).to receive(:courses_list_from_ccns).with('2013', 'C', [missing_sections[0][:ccn]]).and_return(missing_sections)
-      allow(MyAcademics::Teaching).to receive(:new).and_return(fake_formatter)
+      allow(Berkeley::Teaching).to receive(:new).and_return(fake_formatter)
       bigger_site_sections = official_sections + missing_sections
       course_info = {term: {term_yr: '2013', term_cd: 'C'}, officialSections: bigger_site_sections}
       inaccessible = subject.find_nonteaching_site_sections(teaching_semesters, course_info)

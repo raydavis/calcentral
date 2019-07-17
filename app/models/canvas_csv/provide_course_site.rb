@@ -44,6 +44,7 @@ module CanvasCsv
         @background_job_total_steps -= 2
       else
         add_instructor_to_section(@import_data['explicit_sections_for_instructor'].first || @section_definitions.first)
+        expire_instructor_sites_cache
       end
 
       # Start a background job to add current students and instructors to the new site.
@@ -119,7 +120,7 @@ module CanvasCsv
 
       if @import_data['is_admin_by_ccns']
         # Admins can specify semester and CCNs directly, without access checks.
-        data_formatter = MyAcademics::Teaching.new(@uid)
+        data_formatter = Berkeley::Teaching.new(@uid)
         semester_wrapped_list = data_formatter.courses_list_from_ccns(@import_data['term'][:yr], @import_data['term'][:cd], @import_data['ccns'])
         courses_list = semester_wrapped_list.present? ?
           semester_wrapped_list[0][:classes] :
@@ -240,6 +241,12 @@ module CanvasCsv
       end
     end
 
+    def expire_instructor_sites_cache
+      Canvas::UserCourses.expire(@uid)
+      Canvas::MergedUserSites.expire(@uid)
+      background_job_complete_step 'Clearing bCourses course site cache'
+    end
+
     def import_enrollments_in_background(sis_course_id, canvas_section_rows, into_canvas_course_id = nil)
       CanvasCsv::ProvideCourseSite.new(@uid).bg_import_enrollments(sis_course_id, canvas_section_rows, into_canvas_course_id)
       background_job_complete_step 'Started enrollments import in background'
@@ -290,13 +297,11 @@ module CanvasCsv
       raise RuntimeError, 'User ID not found for candidate' if @uid.blank?
       unless @candidate_courses_list
         # Get all sections for which this user is an instructor, as well as any currently associated course
-        # sites, sorted in a useful fashion. Since this mostly matches what's shown by My Academics for a
-        # given semester, we can simply re-use the appropriate MyAcademics feed providers (so long as course site
-        # provisioning is restricted to semesters supported by My Academics).
+        # sites, sorted in a useful fashion.
         semesters = []
         academics_feed = {}
-        MyAcademics::Teaching.new(@uid).merge academics_feed
-        MyAcademics::CanvasSites.new(@uid).merge academics_feed
+        Berkeley::Teaching.new(@uid).merge academics_feed
+        Berkeley::Teaching.new(@uid).merge_canvas_sites academics_feed
         if (teaching_semesters = academics_feed[:teachingSemesters])
           current_terms.each do |term|
             if (teaching_semester = teaching_semesters.find {|semester| semester[:slug] == term[:slug]})

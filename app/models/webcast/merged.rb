@@ -13,7 +13,7 @@ module Webcast
 
     def get_feed_internal
       logger.warn "Webcast merged feed where year=#{@term_yr}, term=#{@term_cd}, ccn_list=#{@ccn_list.to_s}, course_policy=#{@course_policy.to_s}"
-      @academics = MyAcademics::Teaching.new(@uid)
+      @academics = Berkeley::Teaching.new(@uid)
       feed = { :system_status => Webcast::SystemStatus.new(@options).get }
       feed.merge get_media_feed
     end
