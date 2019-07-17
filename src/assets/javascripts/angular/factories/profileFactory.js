@@ -3,7 +3,7 @@
 /**
  * Profile Factory
  */
-angular.module('calcentral.factories').factory('profileFactory', function(apiService, $http) {
+angular.module('calcentral.factories').factory('profileFactory', function(apiService) {
   var urlPerson = '/api/my/profile';
 
   var getPerson = function(options) {
