@@ -44,7 +44,6 @@ module CanvasCsv
         @background_job_total_steps -= 2
       else
         add_instructor_to_section(@import_data['explicit_sections_for_instructor'].first || @section_definitions.first)
-        expire_instructor_sites_cache
       end
 
       # Start a background job to add current students and instructors to the new site.
@@ -239,14 +238,6 @@ module CanvasCsv
       else
         raise RuntimeError, "Unexpected error obtaining course site URL for #{@import_data['sis_course_id']}"
       end
-    end
-
-    def expire_instructor_sites_cache
-      Canvas::UserCourses.expire(@uid)
-      Canvas::MergedUserSites.expire(@uid)
-      MyClasses::Merged.expire(@uid)
-      MyAcademics::Merged.expire(@uid)
-      background_job_complete_step 'Clearing bCourses course site cache'
     end
 
     def import_enrollments_in_background(sis_course_id, canvas_section_rows, into_canvas_course_id = nil)
@@ -464,7 +455,6 @@ module CanvasCsv
 
     def refresh_sections_cache(canvas_course_id)
       Canvas::CourseSections.new(:course_id => canvas_course_id).sections_list(true)
-      expire_instructor_sites_cache
     end
 
     class IdNotUniqueException < Exception

@@ -18,9 +18,6 @@ class UserController < ApplicationController
 
     if user_id
       status.merge! User::Api.from_session(session).get_feed
-      status.merge!({
-        :academicRoles => MyAcademics::MyAcademicRoles.from_session(session).get_feed
-      })
     end
 
     status.merge!({

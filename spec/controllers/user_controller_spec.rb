@@ -26,7 +26,6 @@ describe UserController do
       json_response['isLoggedIn'].should == false
       json_response['uid'].should be_nil
       json_response['features'].should_not be_nil
-      json_response['academicRoles'].should be_nil
     end
   end
 
@@ -41,9 +40,6 @@ describe UserController do
       expect(json_response['features']).to be_present
       expect(json_response['isDirectlyAuthenticated']).to be true
       expect(json_response['canActOnFinances']).to be true
-      expect(json_response['academicRoles']).to be_present
-      expect(json_response['academicRoles']['current']).to be_present
-      expect(json_response['academicRoles']['historical']).to be_present
     end
     context 'in LTI' do
       let(:uid) { user_id }
@@ -56,9 +52,6 @@ describe UserController do
         expect(json_response['preferredName']).to be_present
         expect(json_response['features']).to be_present
         expect(json_response['isDirectlyAuthenticated']).to be false
-        expect(json_response['academicRoles']).to be_present
-        expect(json_response['academicRoles']['current']).to be_present
-        expect(json_response['academicRoles']['historical']).to be_present
       end
     end
   end

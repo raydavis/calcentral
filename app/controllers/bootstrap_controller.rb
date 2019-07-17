@@ -3,7 +3,7 @@ class BootstrapController < ApplicationController
   include AllowLti
   before_filter :get_settings, :initialize_calcentral_config
   before_filter :check_lti_only
-  before_filter :check_databases_alive, :check_cache_clear_flag
+  before_filter :check_databases_alive
   layout false
 
   # View code is public/index-junction.html (compiled by webpack build).
@@ -30,26 +30,6 @@ class BootstrapController < ApplicationController
     # so that an error gets thrown if postgres is dead.
     if !User::Data.database_alive?
       raise "CalCentral database is currently unavailable"
-    end
-  end
-
-  def check_cache_clear_flag
-    # Sent from Campus Solutions Fluid UI when returning to CalCentral from
-    # a Fluid activity that may have changed some data.
-    flag = params['ucUpdateCache']
-    url = params['url']
-    case flag
-      when 'finaid'
-        CampusSolutions::FinancialAidExpiry.expire current_user.user_id
-      when 'profile'
-        CampusSolutions::PersonDataExpiry.expire current_user.user_id
-      when 'advisingAcademics'
-        # Since current_user does not know the student-overview UID the advisor is looking-up, we strip it from the URL
-        if (student_uid = url[/[0-9]+/])
-          MyAcademics::FilteredForAdvisor.expire student_uid
-        end
-      else
-        # no-op
     end
   end
 
