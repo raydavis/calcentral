@@ -14,12 +14,8 @@ class Ability
           MailingLists::Member,
           MailingLists::SiteMailingList,
           Oec::CourseCode,
-          ServiceAlerts::Alert,
           User::Auth
         ]
-      end
-      if user.policy.can_author?
-        can :manage, [Links::Link, Links::LinkCategory, Links::LinkSection, Links::UserRole]
       end
     end
   end
@@ -68,17 +64,15 @@ RailsAdmin.config do |config|
 
   # Include specific models (exclude the others):
   config.included_models = %w(
-    Links::Link Links::LinkCategory Links::LinkSection Links::UserRole
     MailingLists::Member MailingLists::SiteMailingList
     Oec::CourseCode
-    ServiceAlerts::Alert
     User::Auth
   )
 
   # Label methods for model instances:
   # config.label_methods << :description # Default is [:name, :title]
 
-  # config.model Links::Link do
+  # config.model This::That do
   # end
 
   ################  Model configuration  ################
@@ -91,45 +85,6 @@ RailsAdmin.config do |config|
   #   - This initializer is loaded once at startup (modifications will show up when restarting the application) but all RailsAdmin configuration would stay in one place.
   #   - Models are reloaded at each request in development mode (when modified), which may smooth your RailsAdmin development workflow.
   #
-
-  config.model 'Links::LinkSection' do
-    label 'Section'
-
-    object_label_method do
-      :link_section_label_method
-    end
-
-    field :link_root_cat do
-      associated_collection_scope do
-        Proc.new { |scope|
-          scope = scope.where(root_level: true)
-        }
-      end
-    end
-
-    field :link_top_cat
-    field :link_sub_cat
-  end
-
-# Represent instances of the Linksection model as:
-  def link_section_label_method
-    if self.id
-      "#{self.link_root_cat.try(:name)}/#{self.link_top_cat.try(:name)}/#{self.link_sub_cat.try(:name)}"
-    end
-  end
-
-  config.model 'Links::LinkCategory' do
-    label 'Category'
-  end
-
-  # Links::UserRole needs to be available so we can set perms on Links, but should not be in left nav
-  config.model 'Links::UserRole' do
-    visible false
-  end
-
-  config.model 'Links::Link' do
-    label 'Link'
-  end
 
   config.model 'User::Auth' do
     label 'User Authorizations'
@@ -166,32 +121,9 @@ RailsAdmin.config do |config|
     label 'Mailing Lists'
   end
 
-  config.model 'Oec::CourseCode' do
-    label 'Course Code Mapping'
-  end
-
-  config.model 'ServiceAlerts::Alert' do
-    label 'Service Alert'
-
-    include_fields :title, :snippet, :body, :publication_date
-
-    field :splash do
-      label 'Only on splash page'
-    end
-
-    include_fields :display
-
-    configure :preview do
-      help false
-      read_only true
-    end
-  end
-
   config.navigation_static_label = 'Tools'
 
   config.navigation_static_links = {
-    'Expire Campus Links Cache' => '/api/my/campuslinks/expire',
-    'Reload YAML Settings' => '/api/reload_yaml_settings'
   }
 
 end

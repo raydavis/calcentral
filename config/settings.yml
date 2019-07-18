@@ -241,13 +241,6 @@ cache:
     default: <%= 35.minutes %>
     failure: <%= 30.seconds %>
     BackgroundJobsCheck: <%= 29.days %>
-    MyAcademics::Merged: <%= 15.minutes %>
-    MyActivities::Merged: <%= 10.minutes %>
-    MyBadges::Merged: <%= 2.hours %>
-    MyCampusLinksController: NEXT_08_00
-    MyClasses::Merged: <%= 10.minutes %>
-    MyTasks::Merged: <%= 10.minutes %>
-    UpNext::MyUpNext: NEXT_00_00
     User::Api: NEXT_08_00
     User::AuthenticationValidator: <%= 8.hours %>
     User::AuthenticationValidator::short: <%= 5.minutes %>
@@ -259,11 +252,8 @@ cache:
     CanvasLti::Egrades: <%= 1.minute %>
     CanvasLti::Lti: <%= 5.minutes %>
 
-    Advising::MyAdvising: <%= 2.hours %>
-
     Berkeley::Terms: NEXT_08_00
     Berkeley::LegacyTerms: <%= 29.days %>
-    Finaid::TimeRange: <%= 4.hours %>
 
     CampusOracle::CourseSections: NEXT_08_00
     CampusOracle::UserAttributes: NEXT_08_00
@@ -280,41 +270,6 @@ cache:
     Canvas::Todo: <%= 20.minutes %>
     Canvas::UpcomingEvents: <%= 20.minutes %>
 
-    MyBadges::GoogleDrive: <%= 10.minutes %>
-
-    MyTasks::GoogleTasks: <%= 4.minutes %>
-
-    CalLink::Memberships: <%= 4.hours %>
-    CalLink::Organization: <%= 4.hours %>
-
-    Textbooks::Proxy: <%= 24.hours %>
-
-    ServiceAlerts::Merged: <%= 24.hours %>
-
-    CampusSolutions::AddressLabel: <%= 29.days %>
-    CampusSolutions::AddressType: <%= 29.days %>
-    CampusSolutions::ConfidentialStudentMessage: <%= 24.hours %>
-    CampusSolutions::Country: <%= 29.days %>
-    CampusSolutions::CurrencyCode: <%= 29.days %>
-    CampusSolutions::DelegateManagementURL: <%= 24.hours %>
-    CampusSolutions::DelegateStudents: <%= 24.hours %>
-    CampusSolutions::DelegateTermsAndConditions: <%= 24.hours %>
-    CampusSolutions::EthnicitySetup: <%= 29.days %>
-    CampusSolutions::LanguageCode: <%= 29.days %>
-    CampusSolutions::Link: <%= 24.hours %>
-    CampusSolutions::MessageCatalog: <%= 24.hours %>
-    CampusSolutions::MyChecklist: <%= 15.minutes %>
-    CampusSolutions::MyDeposit: <%= 2.minutes %>
-    CampusSolutions::MyHigherOneUrl: <%= 1.seconds %>
-    CampusSolutions::NameType: <%= 29.days %>
-    CampusSolutions::ResidencyMessage: <%= 24.hours %>
-    CampusSolutions::SirConfig: <%= 24.hours %>
-    CampusSolutions::State: <%= 29.days %>
-    CampusSolutions::SlrDeeplink: <%= 24.hours %>
-    CampusSolutions::Translate: <%= 24.hours %>
-    CampusSolutions::DashboardUrl: <%= 29.days %>
-
-    CalnetCrosswalk::ByUid: <%= 4.hours %>
     User::Identifiers::Cached: <%= 4.hours %>
 
     # Merge of independently cached feeds.

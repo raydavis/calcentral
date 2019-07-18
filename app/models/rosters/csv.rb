@@ -57,7 +57,7 @@ module Rosters
           user_id = student[:login_id]
           student_id = student[:student_id]
           email_address = student[:email]
-          role = Campus::ENROLL_STATUS_TO_CSV_ROLE[student[:enroll_status]]
+          role = Canvas::ENROLL_STATUS_TO_CSV_ROLE[student[:enroll_status]]
           section_column_values = student.try(:[], :columns).try(:map) {|sec| sec[:section_number].to_s } || []
           majors = student[:majors].try(:sort).try(:join, ', ')
           terms_in_attendance = student[:terms_in_attendance]
