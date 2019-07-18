@@ -14,23 +14,15 @@ const baseConfig = require('./base.config.js');
 // These endpoints (from routes.rb) will return a response from localhost:3000
 const railsApiRoutes = [
   '/act_as',
-  '/advisor_act_as',
   '/api',
   '/auth',
   '/basic_auth_login',
-  '/campus',
   '/canvas',
-  '/clearing_house',
-  '/college_scheduler',
-  '/delegate_act_as',
   '/delete_user',
   '/delete_users',
-  '/higher_one',
   '/logout',
   '/reauth',
-  '/stop_act_as',
-  '/stop_advisor_act_as',
-  '/stop_delegate_act_as'
+  '/stop_act_as'
 ];
 
 module.exports = webpackMerge(baseConfig, {

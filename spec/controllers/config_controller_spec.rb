@@ -40,15 +40,13 @@ describe ConfigController do
       before do
         expect(AuthenticationState).to receive(:new).and_return double(
           policy: double(can_administrate?: true),
-          classic_viewing_as?: false,
-          authenticated_as_advisor?: false,
-          authenticated_as_delegate?: false
+          classic_viewing_as?: false
         )
       end
       it 'should contain sensitive data' do
         proxies = subject['proxies']
         expect(proxies).to_not be_nil
-        %w(campusSolutions hubEdos calnetCrosswalk casServer ldapHost).each do |key|
+        %w(hubEdos casServer ldapHost).each do |key|
           expect(proxies).to have_key key
         end
       end

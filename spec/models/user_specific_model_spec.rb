@@ -17,22 +17,6 @@ describe UserSpecificModel do
         expect(subject.directly_authenticated?).to be false
       end
     end
-    context 'delegate view-as mode' do
-      let(:session_extras) {
-        {
-          SessionKey.original_delegate_user_id => random_id
-        }
-      }
-      it 'should identify delegated-access session' do
-        expect(subject.directly_authenticated?).to be false
-      end
-    end
-    context 'advisor view-as mode' do
-      let(:session_extras) { { SessionKey.original_advisor_user_id => random_id } }
-      it 'should identify user as having delegate_permissions' do
-        expect(subject.directly_authenticated?).to be false
-      end
-    end
     context 'when only authenticated from an external app' do
       let(:session_extras) { { 'lti_authenticated_only' => true } }
       it { is_expected.to_not be_directly_authenticated }

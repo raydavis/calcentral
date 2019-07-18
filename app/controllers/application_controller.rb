@@ -49,20 +49,6 @@ class ApplicationController < ActionController::Base
     reauthenticate(redirect_path: '/') if session_state_requires_reauthentication?
   end
 
-  def require_released_admit_role
-    is_released_admit = HubEdos::UserAttributes.new(user_id: current_user.user_id).has_role?(:releasedAdmit)
-    render json: { error: 'User must be a released admit to view New Admit data.' }, status: 200 unless is_released_admit
-  end
-
-  # Only a small subset of student API feeds are available to a delegate, and so
-  # these methods filter controller endpoints by default.
-  def allow_if_delegate_view_as?
-    false
-  end
-  # The majority of API feeds are available to advisors during view-as mode. Remove advisor access by overriding this method.
-  def allow_if_advisor_view_as?
-    true
-  end
   def allow_if_classic_view_as?
     true
   end
@@ -72,10 +58,6 @@ class ApplicationController < ActionController::Base
   def deny_if_filtered
     if !allow_if_classic_view_as? && current_user.classic_viewing_as?
       raise Pundit::NotAuthorizedError.new("By View As user #{current_user.original_user_id}")
-    elsif !allow_if_delegate_view_as? && current_user.authenticated_as_delegate?
-      raise Pundit::NotAuthorizedError.new("By delegate #{current_user.original_delegate_user_id}")
-    elsif !allow_if_advisor_view_as? && current_user.authenticated_as_advisor?
-      raise Pundit::NotAuthorizedError.new("By advisor #{current_user.original_advisor_user_id}")
     elsif !allow_if_canvas_lti? && current_user.lti_authenticated_only
       raise Pundit::NotAuthorizedError.new('In LTI session')
     end
@@ -197,7 +179,7 @@ class ApplicationController < ActionController::Base
 
   def session_state_requires_reauthentication?
     Settings.features.reauthentication &&
-      (current_user.classic_viewing_as? || current_user.authenticated_as_advisor?) &&
+      (current_user.classic_viewing_as?) &&
       !cookies[:reauthenticated]
   end
 
