@@ -22,12 +22,6 @@ angular.module('calcentral.services').service('userService', function($http, $lo
       if (providedServices.indexOf('calcentral') !== -1) {
         if (profile.hasDashboardTab) {
           utilService.redirect('dashboard');
-        } else if (profile.hasAcademicsTab) {
-          utilService.redirect('academics');
-        } else if (profile.hasFinancialsTab) {
-          utilService.redirect('finances');
-        } else if (profile.hasCampusTab) {
-          utilService.redirect('campus');
         } else {
           utilService.redirect('toolbox');
         }
@@ -42,18 +36,6 @@ angular.module('calcentral.services').service('userService', function($http, $lo
     switch (page) {
       case 'dashboard': {
         pageAccessible = !!profile.hasDashboardTab;
-        break;
-      }
-      case 'academics': {
-        pageAccessible = !!profile.hasDashboardTab;
-        break;
-      }
-      case 'finances': {
-        pageAccessible = !!profile.hasFinancialsTab;
-        break;
-      }
-      case 'campus': {
-        pageAccessible = !!profile.hasCampusTab;
         break;
       }
       case 'toolbox': {

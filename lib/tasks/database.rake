@@ -2,10 +2,10 @@ namespace :database do
 
   def seeded?
     begin
-      link_role = Links::UserRole.all.first
+      course_code = Oec::CourseCode.all.first
     rescue ActiveRecord::NoDatabaseError, ActiveRecord::StatementInvalid
     end
-    if link_role.present?
+    if course_code.present?
       true
     else
       false

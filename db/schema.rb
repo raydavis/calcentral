@@ -49,46 +49,6 @@ ActiveRecord::Schema.define(version: 20181129202212) do
     t.datetime "latest_term_enrollment_csv_set"
   end
 
-  create_table "link_categories", force: :cascade do |t|
-    t.string   "name",       limit: 255,                 null: false
-    t.string   "slug",       limit: 255,                 null: false
-    t.boolean  "root_level",             default: false
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
-  end
-
-  create_table "link_categories_link_sections", id: false, force: :cascade do |t|
-    t.integer "link_category_id"
-    t.integer "link_section_id"
-  end
-
-  create_table "link_sections", force: :cascade do |t|
-    t.integer  "link_root_cat_id"
-    t.integer  "link_top_cat_id"
-    t.integer  "link_sub_cat_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-  end
-
-  create_table "link_sections_links", id: false, force: :cascade do |t|
-    t.integer "link_section_id"
-    t.integer "link_id"
-  end
-
-  create_table "links", force: :cascade do |t|
-    t.string   "name",        limit: 255
-    t.string   "url",         limit: 255
-    t.string   "description", limit: 255
-    t.boolean  "published",               default: true
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
-  end
-
-  create_table "links_user_roles", id: false, force: :cascade do |t|
-    t.integer "link_id"
-    t.integer "user_role_id"
-  end
-
   create_table "oauth2_data", force: :cascade do |t|
     t.string  "uid",             limit: 255
     t.string  "app_id",          limit: 255
@@ -137,19 +97,6 @@ ActiveRecord::Schema.define(version: 20181129202212) do
   create_table "schema_migrations_fixed_backup", id: false, force: :cascade do |t|
     t.string "version", limit: 255
   end
-
-  create_table "service_alerts", force: :cascade do |t|
-    t.string   "title",            limit: 255,                 null: false
-    t.text     "snippet"
-    t.text     "body",                                         null: false
-    t.datetime "publication_date",                             null: false
-    t.boolean  "display",                      default: false, null: false
-    t.boolean  "splash",                       default: false, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "service_alerts", ["display", "created_at"], name: "index_service_alerts_on_display_and_created_at", using: :btree
 
   create_table "user_auths", force: :cascade do |t|
     t.string   "uid",          limit: 255,                 null: false

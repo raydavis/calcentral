@@ -134,34 +134,6 @@ describe User::Api do
     end
   end
 
-  describe '#get_delegate_students' do
-    subject { testee.get_delegate_students }
-
-    shared_context 'it doesn\'t find any students' do
-      it 'returns nil' do
-        expect(subject).to be nil
-      end
-    end
-
-    context 'when user is not a delegate' do
-      it_behaves_like 'it doesn\'t find any students'
-    end
-    context 'when user is a delegate' do
-      let(:original_delegate_user_id) { random_id }
-      it 'returns a list of students' do
-        expect(subject).to eq delegate_students[:feed][:students]
-      end
-      context 'when delegate has no students' do
-        let(:delegate_students) {}
-        it_behaves_like 'it doesn\'t find any students'
-      end
-    end
-    context 'when request is not coming from CalCentral' do
-      let(:is_calcentral) { false }
-      it_behaves_like 'it doesn\'t find any students'
-    end
-  end
-
   describe '#get_feed' do
     subject { testee.get_feed }
     let(:expected_acting_as_uid) { uid }
@@ -217,114 +189,6 @@ describe User::Api do
     end
 
     it_behaves_like 'a well-tempered feed'
-
-    context 'when user is a delegate' do
-      let(:directly_authenticated) { true }
-      let(:original_delegate_user_id) { random_id }
-      let(:expected_acting_as_uid) { false }
-      let(:expected_can_act_on_finances) { true }
-      let(:expected_can_see_cs_links) { true }
-      let(:expected_is_delegate_user) { true }
-      let(:expected_has_toolbox_tab) { true }
-      it_behaves_like 'a well-tempered feed'
-
-      context 'and show profile flag is true' do
-        let(:sis_profile_visible) { true }
-        let(:expected_show_sis_profile_ui) { false }
-        it_behaves_like 'a well-tempered feed'
-      end
-
-      context 'and viewing as a student' do
-        let(:authenticated_as_delegate) { true }
-        let(:directly_authenticated) { false }
-        let(:expected_can_act_on_finances) { false }
-        let(:expected_can_see_cs_links) { false }
-        let(:expected_has_toolbox_tab) { false }
-        let(:match_expected_delegate_acting_as_uid) { eq original_delegate_user_id }
-        let(:expected_first_name) { given_first_name }
-        let(:expected_full_name) { expected_given_full_name }
-        let(:expected_preferred_name) { expected_given_full_name }
-        let(:expected_is_delegate_user) { false }
-        let(:expected_first_login_at) { nil }
-        let(:expected_acting_as_uid) { false }
-        it_behaves_like 'a well-tempered feed'
-
-        context 'and has privilege to see other users\' finances' do
-          let(:delegated_privileges) { {financial: true} }
-          let(:expected_can_act_on_finances) { true }
-          let(:expected_has_financials_tab) { true }
-          it_behaves_like 'a well-tempered feed'
-        end
-
-        context 'and has privilege to see other users\' grades' do
-          let(:delegated_privileges) { {viewGrades: true} }
-          let(:expected_can_view_academics) { true }
-          let(:expected_can_view_grades) { true }
-          it_behaves_like 'a well-tempered feed'
-        end
-
-        context 'and has privilege to see other users\' enrollments' do
-          let(:delegated_privileges) { {viewEnrollments: true} }
-          let(:expected_can_view_academics) { true }
-          it_behaves_like 'a well-tempered feed'
-        end
-      end
-
-      context 'and has no students assigned' do
-        let(:delegate_students) { {} }
-        let(:expected_is_delegate_user) { false }
-        let(:expected_has_toolbox_tab) { false }
-        it_behaves_like 'a well-tempered feed'
-      end
-
-      context 'and is also an advisor' do
-        let(:has_advisor_role) { true }
-        let(:expected_can_view_grades) { true }
-        let(:expected_has_badges) { true }
-        let(:expected_has_campus_tab) { true }
-        let(:expected_has_dashboard_tab) { true }
-        let(:expected_has_toolbox_tab) { true }
-        it_behaves_like 'a well-tempered feed'
-      end
-    end
-
-    context 'when user is an advisor' do
-      let(:directly_authenticated) { true }
-      let(:has_advisor_role) { true }
-      let(:original_advisor_user_id) { random_id }
-      let(:expected_acting_as_uid) { false }
-      let(:expected_can_act_on_finances) { true }
-      let(:expected_can_see_cs_links) { true }
-      let(:expected_can_view_grades) { true }
-      let(:expected_has_badges) { true }
-      let(:expected_has_campus_tab) { true }
-      let(:expected_has_dashboard_tab) { true }
-      let(:expected_has_toolbox_tab) { true }
-      it_behaves_like 'a well-tempered feed'
-
-      context 'and show profile flag is true' do
-        let(:sis_profile_visible) { true }
-        let(:expected_show_sis_profile_ui) { true }
-        it_behaves_like 'a well-tempered feed'
-      end
-
-      context 'and viewing as a student' do
-        let(:authenticated_as_advisor) { true }
-        let(:directly_authenticated) { false }
-        let(:match_expected_advisor_acting_as_uid) { eq original_advisor_user_id }
-        let(:expected_can_act_on_finances) { false }
-        let(:expected_can_see_cs_links) { false }
-        let(:expected_has_badges) { false }
-        let(:expected_has_toolbox_tab) { false }
-        it_behaves_like 'a well-tempered feed'
-
-        context 'and show profile flag is true' do
-          let(:sis_profile_visible) { true }
-          let(:expected_show_sis_profile_ui) { true }
-          it_behaves_like 'a well-tempered feed'
-        end
-      end
-    end
 
     context 'when user is a superuser' do
       let(:can_administrate) { true }
@@ -435,57 +299,9 @@ describe User::Api do
       let(:can_view_as) { true }
       let(:expected_is_viewer) { true }
       it_behaves_like 'a well-tempered feed'
-
-      context 'and user is a delegate' do
-        let(:directly_authenticated) { true }
-        let(:original_delegate_user_id) { random_id }
-        let(:expected_acting_as_uid) { false }
-        let(:expected_can_act_on_finances) { true }
-        let(:expected_can_see_cs_links) { true }
-        let(:expected_has_toolbox_tab) { true }
-        let(:expected_is_delegate_user) { true }
-        let(:expected_is_viewer) { true }
-        it_behaves_like 'a well-tempered feed'
-
-        context 'viewing as a student' do
-          let(:authenticated_as_delegate) { true }
-          let(:directly_authenticated) { false }
-          let(:expected_can_act_on_finances) { false }
-          let(:match_expected_delegate_acting_as_uid) { eq original_delegate_user_id }
-          let(:expected_can_see_cs_links) { false }
-          let(:expected_first_name) { given_first_name }
-          let(:expected_full_name) { expected_given_full_name }
-          let(:expected_preferred_name) { expected_given_full_name }
-          let(:expected_first_login_at) { nil }
-          let(:expected_has_toolbox_tab) { false }
-          let(:expected_is_delegate_user) { false }
-          let(:expected_is_viewer) { false }
-          it_behaves_like 'a well-tempered feed'
-        end
-      end
-    end
-
-    context 'when user has privilege to see other users\' finances' do
-      let(:delegated_privileges) { {financial: true} }
-      it_behaves_like 'a well-tempered feed'
-    end
-
-    context 'when user has privilege to see other users\' grades' do
-      let(:delegated_privileges) { {viewGrades: true} }
-      it_behaves_like 'a well-tempered feed'
-    end
-
-    context 'when user has privilege to see other users\' enrollments' do
-      let(:delegated_privileges) { {viewEnrollments: true} }
-      it_behaves_like 'a well-tempered feed'
-    end
-
-    context 'when show profile flag is true but user doesn\'t have the right role' do
-      let(:sis_profile_visible) { true }
-      let(:expected_show_sis_profile_ui) { false }
-      it_behaves_like 'a well-tempered feed'
     end
   end
+
   def configure_mocks
     calcentral_user_data = double('User::Data record', :preferred_name => override_name, :first_login_at => '2017-04-19T11:54:29.086-07:00', :update_attribute => false)
     mock_user_model = double('User::Data model', :first => calcentral_user_data, :first_or_create => calcentral_user_data)

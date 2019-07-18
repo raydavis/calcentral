@@ -5,7 +5,6 @@ module User
     include Cache::UserCacheExpiry
     # Needed to expire cache entries specific to Viewing-As users alongside original user's cache.
     include Cache::RelatedCacheKeyTracker
-    include CampusSolutions::DelegatedAccessFeatureFlagged
     include ClassLogger
 
     def init
@@ -15,19 +14,12 @@ module User
       @user_attributes ||= User::AggregatedAttributes.new(@uid).get_feed
       @first_login_at ||= @calcentral_user_data ? @calcentral_user_data.first_login_at : nil
       @override_name ||= @calcentral_user_data ? @calcentral_user_data.preferred_name : nil
-      @delegate_students = get_delegate_students
+      @delegate_students = nil
       self
     end
 
     def instance_key
       Cache::KeyGenerator.per_view_as_type @uid, @options
-    end
-
-    def get_delegate_students
-      return nil unless is_cs_delegated_access_feature_enabled && ProvidedServices.calcentral?
-      delegate_uid = authentication_state.original_delegate_user_id || @uid
-      response = CampusSolutions::DelegateStudents.new(user_id: delegate_uid).get
-      response && response[:feed] && response[:feed][:students]
     end
 
     def preferred_name
