@@ -19,21 +19,6 @@ class RoutesListController < ApplicationController
       /api/server_info
     )
     if calcentral?
-      routes.concat %w(
-        /api/my/academics
-        /api/my/activities
-        /api/my/badges
-        /api/my/campuslinks
-        /api/my/classes
-        /api/my/financials
-        /api/my/groups
-        /api/my/photo
-        /api/my/tasks
-        /api/my/up_next
-        /api/my/updated_feeds
-        /api/service_alerts
-        /api/stats
-      )
     end
     if bcourses?
       routes.concat %w(

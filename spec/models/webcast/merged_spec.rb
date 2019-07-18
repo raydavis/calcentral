@@ -12,7 +12,7 @@ describe Webcast::Merged do
         Webcast::Merged.new(user_id, policy, 2014, 'B', [1], options).get_feed
       end
       before do
-        expect_any_instance_of(MyAcademics::Teaching).not_to receive :new
+        expect_any_instance_of(Berkeley::Teaching).not_to receive :new
       end
       it 'returns system status when authenticated' do
         expect(feed[:system_status][:isSignUpActive]).to be true
@@ -48,7 +48,7 @@ describe Webcast::Merged do
             ]
           }
         ]
-        expect_any_instance_of(MyAcademics::Teaching).to receive(:courses_list_from_ccns).once.and_return courses_list
+        expect_any_instance_of(Berkeley::Teaching).to receive(:courses_list_from_ccns).once.and_return courses_list
       end
       it 'returns one match media' do
         stat_131 = feed[:media][0]
@@ -84,7 +84,7 @@ describe Webcast::Merged do
             ]
           }
         ]
-        expect_any_instance_of(MyAcademics::Teaching).to receive(:courses_list_from_ccns).once.and_return courses_list
+        expect_any_instance_of(Berkeley::Teaching).to receive(:courses_list_from_ccns).once.and_return courses_list
       end
       it 'pads ccn with zeroes' do
         law_course = feed[:media][0]
@@ -157,8 +157,8 @@ describe Webcast::Merged do
             ]
           }
         ]
-        expect_any_instance_of(MyAcademics::Teaching).to receive(:courses_list_from_ccns).with(2014, 'B', [87432, 76207]).and_return sections_with_recordings
-        expect_any_instance_of(MyAcademics::Teaching).to receive(:courses_list_from_ccns).with(2014, 'B', [7620]).and_return webcast_eligible
+        expect_any_instance_of(Berkeley::Teaching).to receive(:courses_list_from_ccns).with(2014, 'B', [87432, 76207]).and_return sections_with_recordings
+        expect_any_instance_of(Berkeley::Teaching).to receive(:courses_list_from_ccns).with(2014, 'B', [7620]).and_return webcast_eligible
         expect_any_instance_of(AuthenticationStatePolicy).to receive(:can_view_webcast_sign_up?).once.and_return true
       end
 
@@ -215,7 +215,7 @@ describe Webcast::Merged do
             ]
           }
         ]
-        expect_any_instance_of(MyAcademics::Teaching).to receive(:courses_list_from_ccns).with(2015, 'B', [51990, 5915]).and_return sections_with_recordings
+        expect_any_instance_of(Berkeley::Teaching).to receive(:courses_list_from_ccns).with(2015, 'B', [51990, 5915]).and_return sections_with_recordings
         expect_any_instance_of(AuthenticationStatePolicy).to receive(:can_view_webcast_sign_up?).once.and_return false
       end
       it 'returns course media' do

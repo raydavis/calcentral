@@ -106,7 +106,7 @@ module CanvasLti
       end
       if missing_sections.present?
         missing_ccns = missing_sections.collect {|s| s[:ccn]}
-        MyAcademics::Teaching.new(@uid).courses_list_from_ccns(term_year, term_code, missing_ccns)
+        Berkeley::Teaching.new(@uid).courses_list_from_ccns(term_year, term_code, missing_ccns)
       end
     end
 
@@ -149,7 +149,7 @@ module CanvasLti
     def get_feed_by_ccns_internal
       worker = CanvasCsv::ProvideCourseSite.new(@uid)
       term = worker.find_term(slug: @admin_term_slug)
-      courses = MyAcademics::Teaching.new(@uid).courses_list_from_ccns(term[:yr], term[:cd], @admin_by_ccns)
+      courses = Berkeley::Teaching.new(@uid).courses_list_from_ccns(term[:yr], term[:cd], @admin_by_ccns)
       feed = {
         is_admin: user_admin?,
         admin_semesters: worker.current_terms,
