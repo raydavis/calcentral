@@ -4,10 +4,10 @@ describe HubEdos::UserAttributes do
   let(:user_id) { '61889' }
   let(:confidential_student) { false }
   let(:fake_contact_proxy) { HubEdos::Contacts.new(fake: true, user_id: user_id) }
-  before { allow(HubEdos::Contacts).to receive(:new).and_return fake_contact_proxy }
-
-  let(:fake_crosswalk_proxy) { CalnetCrosswalk::ByUid.new(fake:true, user_id: user_id) }
-  before { allow(CalnetCrosswalk::ByUid).to receive(:new).and_return fake_crosswalk_proxy }
+  before do
+    allow(HubEdos::Contacts).to receive(:new).and_return fake_contact_proxy
+    allow(CalnetLdap::UserAttributes).to receive(:new).and_return double(get_feed: {campus_solutions_id: '11667051'})
+  end
 
   subject { HubEdos::UserAttributes.new(user_id: user_id).get }
 

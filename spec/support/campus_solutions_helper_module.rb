@@ -68,11 +68,6 @@ module CampusSolutionsHelperModule
     end
   end
 
-  shared_examples 'a proxy that properly observes the profile feature flag' do
-    let(:flag) { :cs_profile }
-    it_behaves_like 'a proxy that observes a feature flag'
-  end
-
   shared_examples 'a proxy that properly observes the financial_aid feature flag' do
     let(:flag) { :cs_fin_aid }
     it_behaves_like 'a proxy that observes a feature flag'

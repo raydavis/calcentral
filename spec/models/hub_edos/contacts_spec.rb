@@ -3,11 +3,11 @@ describe HubEdos::Contacts do
   context 'mock proxy' do
     before(:each) do
       allow(Settings.terms).to receive(:fake_now).and_return('2017-11-07 00:00:00')
+      allow(CalnetLdap::UserAttributes).to receive(:new).and_return double(get_feed: {campus_solutions_id: '11667051'})
     end
     let(:proxy) { HubEdos::Contacts.new(fake: true, user_id: '61889') }
     subject { proxy.get }
 
-    it_behaves_like 'a proxy that properly observes the profile feature flag'
     it_should_behave_like 'a simple proxy that returns errors'
 
     it 'returns data with the expected structure' do

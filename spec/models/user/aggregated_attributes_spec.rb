@@ -57,7 +57,6 @@ describe User::AggregatedAttributes do
     context 'Hub feed' do
       it 'should return edo user attributes' do
         expect(subject[:isLegacyStudent]).to be false
-        expect(subject[:sisProfileVisible]).to be true
         expect(subject[:officialBmailAddress]).to eq bmail_from_edo
         expect(subject[:campusSolutionsId]).to eq campus_solutions_id
         expect(subject[:studentId]).to eq campus_solutions_id

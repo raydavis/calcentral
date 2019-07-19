@@ -11,6 +11,12 @@ module HubEdos
       'hub_contacts.json'
     end
 
+    def mock_request
+      # TODO We currently force the HubEdos integration through a UID-to-CSID translation, and we don't have LDAP
+      # fixtures to support that. That should be remedied as part of the V2 transition.
+      super.merge(uri_matching: "#{@settings.base_url}/.*/contacts")
+    end
+
     def whitelist_fields
       %w(identifiers affiliations names addresses phones emails urls emergencyContacts confidential)
     end

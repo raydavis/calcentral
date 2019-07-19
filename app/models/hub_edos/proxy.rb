@@ -35,15 +35,11 @@ module HubEdos
     end
 
     def get
-      if is_feature_enabled
-        wrapped_response = self.class.handling_exceptions(instance_key) do
-          get_internal
-        end
-        internal_response = wrapped_response ? wrapped_response[:response] : {}
-        process_response_after_caching internal_response
-      else
-        {}
+      wrapped_response = self.class.handling_exceptions(instance_key) do
+        get_internal
       end
+      internal_response = wrapped_response ? wrapped_response[:response] : {}
+      process_response_after_caching internal_response
     end
 
     def process_response_after_caching(internal_response)

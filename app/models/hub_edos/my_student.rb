@@ -17,7 +17,6 @@ module HubEdos
         },
         statusCode: 200
       }
-      return merged unless is_cs_profile_feature_enabled
 
       proxy_options = @options.merge user_id: @uid
       [HubEdos::Contacts, HubEdos::Demographics, HubEdos::Gender, HubEdos::Affiliations].each do |proxy|
