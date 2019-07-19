@@ -32,10 +32,6 @@ describe Cache::KeyGenerator do
         let(:session_key) { SessionKey.original_user_id }
         it_behaves_like 'view-as session with distinct cache key'
       end
-      context 'advisor in view-as mode' do
-        let(:session_key) { SessionKey.original_advisor_user_id }
-        it_behaves_like 'view-as session with distinct cache key'
-      end
     end
   end
 end

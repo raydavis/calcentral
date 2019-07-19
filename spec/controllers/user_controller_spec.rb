@@ -39,7 +39,6 @@ describe UserController do
       expect(json_response['preferredName']).to be_present
       expect(json_response['features']).to be_present
       expect(json_response['isDirectlyAuthenticated']).to be true
-      expect(json_response['canActOnFinances']).to be true
     end
     context 'in LTI' do
       let(:uid) { user_id }
@@ -154,9 +153,8 @@ describe UserController do
           JSON.parse response.body
         end
         let(:original_user_id) { random_id }
-        it 'does not allow changing financial data' do
+        it 'notices' do
           expect(subject['isDirectlyAuthenticated']).to be false
-          expect(subject['canActOnFinances']).to be false
         end
       end
     end

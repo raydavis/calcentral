@@ -35,7 +35,6 @@ describe User::Api do
   let(:user_attributes) do
     {
       isLegacyStudent: false,
-      sisProfileVisible: sis_profile_visible,
       roles: roles,
       defaultName: default_name,
       firstName: first_name,

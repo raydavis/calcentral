@@ -116,7 +116,6 @@ module User
       has_instructor_history = User::HasInstructorHistory.new(@uid).has_instructor_history?
       roles = @user_attributes[:roles]
       logger.error "UID #{@uid} has active student role but no CS ID" if @user_attributes[:campusSolutionsId].blank? && roles[:student] && !Berkeley::Terms.fetch.current.legacy?
-      can_view_academics = has_academics_tab?(has_instructor_history, has_student_history)
       directly_authenticated = authentication_state.directly_authenticated?
       # This tangled logic is a historical artifact of divergent approaches to View-As and LTI-based authentication.
       acting_as_uid = directly_authenticated ? false : authentication_state.real_user_id

@@ -122,11 +122,7 @@ class ApplicationController < ActionController::Base
         {except: [:confidential]}
       end
     else
-      require_advisor current_user.user_id
-      {
-        roles: [:applicant, :releasedAdmit, :student, :exStudent],
-        except: [:confidential]
-      }
+      raise Pundit::NotAuthorizedError.new("User (UID: #{uid}) is not allowed to View As")
     end
   end
 
