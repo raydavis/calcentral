@@ -4,7 +4,6 @@ describe HubEdos::MyStudent do
     proxy.get_feed_internal
   }
   before do
-    allow_any_instance_of(LinkFetcher).to receive(:fetch_link).with('UC_CX_PROFILE', anything).and_return('edit profile link')
     allow_any_instance_of(User::AggregatedAttributes).to receive(:get_feed).and_return(user_attributes)
   end
   let(:options) { {} }

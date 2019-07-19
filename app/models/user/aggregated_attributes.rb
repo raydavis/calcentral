@@ -2,7 +2,6 @@ module User
   class AggregatedAttributes < UserSpecificModel
     include Cache::CachedFeed
     include Cache::UserCacheExpiry
-    include CampusSolutions::ProfileFeatureFlagged
 
     def initialize(uid, options={})
       super(uid, options)
