@@ -87,8 +87,6 @@ class SessionsController < ApplicationController
   def destroy
     logout
     url = request.protocol + ApplicationController.correct_port(request.host_with_port, request.env['HTTP_REFERER'])
-
-    url = "#{Settings.campus_solutions_proxy.logout_url}&redirect_url=#{CGI.escape url}" if Settings.features.cs_logout
     cas_logout_url = "#{Settings.cas_logout_url}?service=#{CGI.escape url}"
 
     # CCAdmin uses Delete request route that does not use JS redirect mechanism

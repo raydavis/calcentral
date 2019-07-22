@@ -11,7 +11,6 @@ feature 'act_as_user' do
   end
 
   scenario 'switch to another user and back while using a super-user' do
-    # disabling the cache_warmer while we're switching back and forth between users
     login_with_cas '238382'
     suppress_rails_logging {
       act_as_user '2040'

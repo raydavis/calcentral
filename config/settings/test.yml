@@ -22,29 +22,14 @@ ldap:
 google_proxy:
   fake: true
 
-eft_proxy:
-  fake: true
-
-financials_proxy:
-  fake: true
-
 hub_term_proxy:
-  fake: true
-
-textbooks_proxy:
   fake: true
 
 terms:
   # Keyed to H2 test data
   fake_now: 2013-10-11 04:20:00
 
-cal_link_proxy:
-  fake: true
-
 cal1card_proxy:
-  fake: true
-
-calnet_crosswalk_proxy:
   fake: true
 
 mailgun_proxy:
@@ -63,98 +48,11 @@ cache:
   log_level: <%= Logger::DEBUG %>
   expiration:
     default: <%= 35.minutes %>
-    MyAcademics::Merged: <%= 1.day %>
-    MyActivities: <%= 1.day %>
-    MyBadges::Merged: <%= 1.day %>
-    MyClasses::Merged: <%= 1.day %>
-    Financials::MyFinancials: <%= 1.day %>
-    Finaid::MyFinAid: <%= 1.day %>
-    Cal1card::MyCal1card: <%= 1.day %>
-    MyGroups::Merged: <%= 1.day %>
-    MyTasks::Merged: <%= 1.day %>
-    UpNext::MyUpNext: <%= 1.day %>
     User::Api: <%= 1.day %>
 
-grading_period:
-  links:
-    final: '#'
-    midpoint:  '#'
-    law:  '#'
-  dates:
-    general:
-      fall_2017:
-        midpoint:
-          start: 2017-10-30 00:00:00 -0800
-          end: 2017-12-01 23:59:59 -0800
-        final:
-          start: 2017-12-12 00:00:00 -0800
-          end: 2017-12-21 22:59:59 -0800
-      spring_2018:
-        midpoint:
-          start: 2018-03-01 00:00:00 -0800
-          end: 2018-03-10 23:59:59 -0800
-        final:
-          start: 2018-03-22 00:00:00 -0800
-          end: 2018-03-28 23:59:59 -0800
-    law:
-      summer_2017:
-        Q1:
-          start: 2017-06-12 00:00:00 -0700
-          end: 2017-06-27 23:59:59 -0700
-        Q2:
-          start: 2017-07-03 00:00:00 -0700
-          end: 2017-07-18 23:59:59 -0700
-        Q3:
-          start: 2017-07-24 00:00:00 -0700
-          end: 2017-08-08 23:59:59 -0700
-        Q4:
-          start: 2017-08-14 00:00:00 -0700
-          end: 2017-08-30 23:59:59 -0700
-      fall_2017:
-        start: 2017-11-05 00:00:00 -0800
-        end: 2018-01-11 22:59:59 -0800
-      spring_2018:
-        start: 2018-03-26 00:00:00 -0800
-        end: 2018-03-30 23:59:59 -0800
-
-
-class_enrollment:
-  concurrent_apply_deadlines: [
-    {
-      term_code: '2165',
-      deadline_date: '05/01/2016'
-    },
-    {
-      term_code: '2168',
-      deadline_date: '09/23/2016'
-    }
-  ]
 
 features:
-  advising: true
-  advising_academic_planner: true
-  advising_student_success: true
+  allow_legacy_fallback: true
   cal1card: true
-  campus_links_from_file: true
-  class_info_enrollment_tab: true
-  cs_academic_planner: true
-  cs_advisor_student_lookup: true
-  cs_billing: true
-  cs_committees: true
-  cs_degree_progress_grad_advising: true
-  cs_degree_progress_grad_student: true
-  cs_degree_progress_ugrd_advising: true
-  cs_degree_progress_ugrd_student: true
-  cs_delegated_access: true
-  cs_enrollment_card: true
-  cs_fin_aid: true
-  cs_fin_aid_award_compare: true
-  cs_logout: true
-  cs_profile_emergency_contacts: true
-  cs_profile_languages: true
-  cs_profile_work_experience: true
-  financials: true
-  standings: true
-  textbooks: true
   videos: true
   webcast_sign_up_on_calcentral: true
