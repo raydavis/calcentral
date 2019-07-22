@@ -15,20 +15,6 @@ describe AuthenticationState do
       }}
       it {should be false}
     end
-    context 'when delegate viewing as' do
-      let(:fake_session) {{
-        'user_id' => random_id,
-        SessionKey.original_delegate_user_id => random_id
-      }}
-      it {should be false}
-    end
-    context 'when advisor viewing as' do
-      let(:fake_session) {{
-        'user_id' => random_id,
-        SessionKey.original_advisor_user_id => random_id
-      }}
-      it {should be false}
-    end
     context 'when only authenticated from an external app' do
       let(:fake_session) {{
         'user_id' => random_id,
@@ -106,33 +92,6 @@ describe AuthenticationState do
       let(:fake_session) {{
       }}
       it {should be false}
-    end
-  end
-
-  describe '#delegate_viewing_as?' do
-    subject {AuthenticationState.new fake_session}
-    context 'when authenticated but not a delegate' do
-      let(:fake_session) {{
-        'user_id' => random_id
-      }}
-      it 'should not find delegate session attribute' do
-        expect(subject.authenticated_as_delegate?).to be false
-      end
-    end
-    context 'when only authenticated from an external app' do
-      let(:fake_session) {{
-        'user_id' => random_id,
-        'lti_authenticated_only' => true
-      }}
-      it 'should force delegate session to false' do
-        expect(subject.authenticated_as_delegate?).to be false
-      end
-    end
-    context 'when not logged in' do
-      let(:fake_session) { {} }
-      it 'should force delegate session to false' do
-        expect(subject.authenticated_as_delegate?).to be false
-      end
     end
   end
 end

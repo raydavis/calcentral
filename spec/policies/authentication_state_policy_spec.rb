@@ -3,14 +3,10 @@ describe AuthenticationStatePolicy do
     {
       'user_id' => user_id,
       SessionKey.original_user_id => original_user_id,
-      SessionKey.original_advisor_user_id => original_advisor_user_id,
-      SessionKey.original_delegate_user_id => original_delegate_user_id,
       'lti_authenticated_only' => lti_authenticated_only
     }
   end
   let(:original_user_id) {nil}
-  let(:original_advisor_user_id) {nil}
-  let(:original_delegate_user_id) {nil}
   let(:lti_authenticated_only) {nil}
   let(:superuser_uid) {random_id}
   let(:author_uid) {random_id}
@@ -109,14 +105,6 @@ describe AuthenticationStatePolicy do
       let(:user_id) {oec_administrator_uid}
       context 'traditional view-as' do
         let(:original_user_id) {viewer_uid}
-        its(:can_administer_oec?) { is_expected.to be false }
-      end
-      context 'advisor view-as' do
-        let(:original_advisor_user_id) {random_id}
-        its(:can_administer_oec?) { is_expected.to be false }
-      end
-      context 'delegate view-as' do
-        let(:original_delegate_user_id) {random_id}
         its(:can_administer_oec?) { is_expected.to be false }
       end
     end

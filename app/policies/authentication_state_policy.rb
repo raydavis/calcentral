@@ -79,10 +79,6 @@ class AuthenticationStatePolicy
 
   def can_view_other_user_photo?
     real_auth = @user.real_user_auth
-    if real_auth.is_superuser? && real_auth.active?
-      true
-    else
-      User::SearchUsersByUid.new(id: @user.user_id, roles: [:advisor]).search_users_by_uid.present?
-    end
+    real_auth.is_superuser? && real_auth.active?
   end
 end

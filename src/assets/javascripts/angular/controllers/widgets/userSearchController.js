@@ -157,9 +157,6 @@ angular.module('calcentral.controllers').controller('UserSearchController', func
         var users = _.get(response, 'data.users');
         if (!users || users.length === 0) {
           var noun = 'users';
-          if (apiService.user.profile.roles.advisor) {
-            noun = 'students';
-          }
           searchTab.message = 'Your search on \"' + searchTab.nameOrId + '\" did not match any ' + noun + '.';
         }
         searchTab.users = decorate(users);
@@ -181,11 +178,6 @@ angular.module('calcentral.controllers').controller('UserSearchController', func
   };
 
   var init = function() {
-    if (apiService.user.profile.roles.advisor) {
-      $scope.userSearch.title = 'Student Lookup';
-      $scope.userSearch.loadTab($scope.userSearch.tabs.search);
-      refreshStoredUsers();
-    }
   };
 
   init();

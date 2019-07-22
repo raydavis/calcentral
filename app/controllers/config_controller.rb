@@ -17,9 +17,7 @@ class ConfigController < ApplicationController
     {
       proxies:
       {
-        campusSolutions: Settings.campus_solutions_proxy.base_url,
         hubEdos: Settings.hub_edos_proxy.base_url,
-        calnetCrosswalk: Settings.calnet_crosswalk_proxy.base_url,
         casServer: Settings.cas_server,
         ldapHost: Settings.ldap.host
       }

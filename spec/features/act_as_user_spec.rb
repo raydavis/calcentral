@@ -7,6 +7,7 @@ feature 'act_as_user' do
     User::Data.create({uid: '238382'})
     User::Data.create({uid: '2040'})
     allow(Settings.features).to receive(:reauthentication).and_return false
+    allow(CalnetLdap::UserAttributes).to receive(:new).and_return double(get_feed: {campus_solutions_id: '25738808'})
   end
 
   scenario 'switch to another user and back while using a super-user' do

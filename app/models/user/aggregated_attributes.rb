@@ -2,20 +2,18 @@ module User
   class AggregatedAttributes < UserSpecificModel
     include Cache::CachedFeed
     include Cache::UserCacheExpiry
-    include CampusSolutions::ProfileFeatureFlagged
 
     def initialize(uid, options={})
       super(uid, options)
     end
 
     def get_feed_internal
-      @edo_attributes = HubEdos::UserAttributes.new(user_id: @uid).get if is_cs_profile_feature_enabled
+      @edo_attributes = HubEdos::UserAttributes.new(user_id: @uid).get
       @ldap_attributes = CalnetLdap::UserAttributes.new(user_id: @uid).get_feed
       campus_solutions_id = @edo_attributes[:campus_solutions_id] if @edo_attributes.present?
       unknown = @ldap_attributes.blank? && campus_solutions_id.blank?
       # TODO isLegacyStudent is no longer used.
       is_legacy_student = !unknown && (campus_solutions_id.blank? || @edo_attributes[:is_legacy_student])
-      @sis_profile_visible = is_cs_profile_feature_enabled
       @roles = get_campus_roles
       first_name = get_campus_attribute('first_name', :string) || ''
       last_name = get_campus_attribute('last_name', :string) || ''
@@ -23,7 +21,6 @@ module User
         ldapUid: @uid,
         unknown: unknown,
         isLegacyStudent: is_legacy_student,
-        sisProfileVisible: @sis_profile_visible,
         roles: @roles,
         defaultName: get_campus_attribute('person_name', :string),
         firstName: first_name,
@@ -43,27 +40,21 @@ module User
       base_roles = Berkeley::UserRoles.base_roles
       ldap_roles = (@ldap_attributes && @ldap_attributes[:roles]) || {}
       campus_roles = base_roles.merge ldap_roles
-      if @sis_profile_visible
-        edo_roles = (@edo_attributes && @edo_attributes[:roles]) || {}
-        # Do not introduce conflicts if CS is more up-to-date on active student status.
-        campus_roles.except!(:exStudent) if edo_roles[:student]
-        # If there is a conflict between LDAP roles and EDO roles, keep the role as true
-        campus_roles.merge(edo_roles) { |key, r1, r2| r1 || r2 }
-      else
-        campus_roles
-      end
+      edo_roles = (@edo_attributes && @edo_attributes[:roles]) || {}
+      # Do not introduce conflicts if CS is more up-to-date on active student status.
+      campus_roles.except!(:exStudent) if edo_roles[:student]
+      # If there is a conflict between LDAP roles and EDO roles, keep the role as true
+      campus_roles.merge(edo_roles) { |key, r1, r2| r1 || r2 }
     end
 
     # Split brain three ways until some subset of the brain proves more trustworthy.
     def get_campus_attribute(field, format)
-      if @sis_profile_visible &&
-        (@roles[:student] || @roles[:applicant]) &&
+      (@roles[:student] || @roles[:applicant]) &&
         @edo_attributes[:noStudentId].blank? && (edo_attribute = @edo_attributes[field.to_sym])
-        begin
-          validated_edo_attribute = validate_attribute(edo_attribute, format)
-        rescue
-          logger.error "EDO attribute #{field} failed validation for UID #{@uid}: expected a #{format}, got #{edo_attribute}"
-        end
+      begin
+        validated_edo_attribute = validate_attribute(edo_attribute, format)
+      rescue
+        logger.error "EDO attribute #{field} failed validation for UID #{@uid}: expected a #{format}, got #{edo_attribute}"
       end
       validated_edo_attribute || @ldap_attributes[field.to_sym]
     end

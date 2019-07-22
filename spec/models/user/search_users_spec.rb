@@ -6,9 +6,9 @@ describe User::SearchUsers do
   let(:invalid_id) { random_id }
 
   before do
-    allow(CalnetCrosswalk::ByCsId).to receive(:new).with(user_id: cs_id).and_return double(lookup_ldap_uid: uid)
-    allow(CalnetCrosswalk::ByCsId).to receive(:new).with(user_id: uid).and_return double(lookup_ldap_uid: nil)
-    allow(CalnetCrosswalk::ByCsId).to receive(:new).with(user_id: invalid_id).and_return double(lookup_ldap_uid: nil)
+    allow(User::Identifiers).to receive(:lookup_ldap_uid).with(cs_id).and_return uid
+    allow(User::Identifiers).to receive(:lookup_ldap_uid).with(uid).and_return nil
+    allow(User::Identifiers).to receive(:lookup_ldap_uid).with(invalid_id).and_return nil
     allow(User::AggregatedAttributes).to receive(:new).with(uid).and_return double(get_feed: {ldapUid: uid, studentId: student_id, campusSolutionsId: cs_id})
     allow(User::AggregatedAttributes).to receive(:new).with(cs_id).and_return double(get_feed: {unknown: true})
     allow(User::AggregatedAttributes).to receive(:new).with(invalid_id).and_return double(get_feed: {unknown: true})

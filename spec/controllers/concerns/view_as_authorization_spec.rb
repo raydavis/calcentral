@@ -5,10 +5,6 @@ describe ViewAsAuthorization do
   let(:directly_authenticated) { true }
   let(:policy) { double(can_view_as?: can_view_as) }
   let(:current_user) { double user_id: random_id, policy: policy, directly_authenticated?: directly_authenticated }
-  let(:is_advisor) { false }
-  before {
-    allow(User::AggregatedAttributes).to receive(:new).with(current_user.user_id).and_return double get_feed: { roles: { advisor: is_advisor } }
-  }
 
   describe '#authorize_query_stored_users' do
     subject { filter.authorize_query_stored_users current_user }

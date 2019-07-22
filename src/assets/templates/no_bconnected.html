@@ -1,8 +1,8 @@
 <p data-ng-show="mode === 'upnext' || mode === 'tasks'">
   <span data-ng-if="mode === 'tasks'">Want to create your own personal bTasks?</span>
   <span data-ng-if="mode === 'upnext'">Want to see events from your bCal calendar?</span>
-  <button data-ng-if="!api.user.profile['actingAsUid'] && !api.user.profile['delegateActingAsUid'] && !api.user.profile['advisorActingAsUid']" class="cc-button-link" data-ng-click="api.user.enableOAuth('Google')">Connect</button>
-  <span data-ng-if="api.user.profile['actingAsUid'] || api.user.profile['delegateActingAsUid'] || api.user.profile['advisorActingAsUid']">Connect</span> CalCentral to your bConnected Google calendar account, then Accept.
+  <button data-ng-if="!api.user.profile['actingAsUid']" class="cc-button-link" data-ng-click="api.user.enableOAuth('Google')">Connect</button>
+  <span data-ng-if="api.user.profile['actingAsUid']">Connect</span> CalCentral to your bConnected Google calendar account, then Accept.
   <button class="cc-button-link" data-ng-show="!showReminder && mode !== 'tasks'" data-ng-click="showReminder=!showReminder">Show more</button>
 </p>
 <div data-ng-show="mode === 'main'">

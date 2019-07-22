@@ -16,11 +16,7 @@ module User
     def self.lookup_campus_solutions_id(ldap_uid)
       cs_id = Cached.fetch_from_cache cs_id_key(ldap_uid)
       if cs_id.blank?
-        if Settings.calnet_crosswalk_proxy.enabled
-          cs_id = CalnetCrosswalk::ByUid.new(user_id: ldap_uid).lookup_campus_solutions_id
-        else
-          cs_id = (ldap_feed = CalnetLdap::UserAttributes.new(user_id: ldap_uid).get_feed) && ldap_feed[:campus_solutions_id]
-        end
+        cs_id = (ldap_feed = CalnetLdap::UserAttributes.new(user_id: ldap_uid).get_feed) && ldap_feed[:campus_solutions_id]
         cache(ldap_uid, cs_id)
       end
       cs_id
@@ -29,11 +25,7 @@ module User
     def self.lookup_ldap_uid(cs_id)
       ldap_uid = Cached.fetch_from_cache uid_key(cs_id)
       if ldap_uid.blank?
-        if Settings.calnet_crosswalk_proxy.enabled
-          ldap_uid = CalnetCrosswalk::ByCsId.new(user_id: cs_id).lookup_ldap_uid
-        else
-          ldap_uid = (ldap_feed = CalnetLdap::UserAttributes.get_feed_by_cs_id cs_id) && ldap_feed[:ldap_uid]
-        end
+        ldap_uid = (ldap_feed = CalnetLdap::UserAttributes.get_feed_by_cs_id cs_id) && ldap_feed[:ldap_uid]
         cache(ldap_uid, cs_id)
       end
       ldap_uid
