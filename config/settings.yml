@@ -14,8 +14,7 @@ application:
   # Lifespan of session cookie
   session_expiration: <%= 4.hours %>
   # Restrict deployment to the SIS service 'calcentral' or the ETS services 'bcourses' and 'oec'.
-  # The default is to support all CalCentral/Junction services.
-  provided_services: ['calcentral', 'bcourses', 'oec']
+  provided_services: ['bcourses', 'oec']
 
 slate_auth_handler:
   client: 'Slate'
@@ -154,41 +153,11 @@ google_proxy:
   test_user_refresh_token: "bogusRefreshToken"
   atom_mail_feed_url: "https://mail.google.com/mail/feed/atom/"
 
-cal_link_proxy:
-  fake: false
-  base_url: "https://callink.berkeley.edu"
-  public_key: secret set in production
-  private_key: secret set in production
-
-cal_groups_proxy:
-  fake: false
-  username: 'secret'
-  password: 'secret'
-  base_url: 'https://group-test.berkeley.edu/gws/servicesRest/json/v2_2_100'
-
-clearing_house_proxy:
-  fake: false
-  base_url: 'https://secure.studentclearinghouse.org/sssportalui/authenticate'
-  app_id: ''
-  app_key: ''
-
-eft_proxy:
-  fake: true
-  # QA Environment
-  base_url: 'https://eftstudent-qa.berkeley.edu/api/'
-  token: 'secret'
-
 mailgun_proxy:
   fake: false
   base_url: 'https://api.mailgun.net/v3'
   domain: 'bcourses-mail.berkeley.edu'
   api_key: 'secret'
-
-financials_proxy:
-  fake: false
-  base_url: 'https://apis.berkeley.edu/uat/cfv'
-  app_id: ''
-  app_key: ''
 
 hub_term_proxy:
   fake: false
@@ -196,20 +165,11 @@ hub_term_proxy:
   app_key: ''
   base_url: 'https://apis.berkeley.edu/uat/sis/v1/terms'
 
-textbooks_proxy:
-  fake: false
-  base_url: "https://calstudentstore.berkeley.edu"
-  token: secret set per deployment layer
-
 webcast_proxy:
   fake: false
   base_url: 'https://webcast-cc-staging.ets.berkeley.edu'
   username: ''
   password: ''
-
-blog_latest_release_notes_feed_proxy:
-  fake: false
-  base_url: "https://www.ets.berkeley.edu/news-archive/calcentral-release-notes/feed"
 
 cal1card_proxy:
   fake: false
@@ -277,22 +237,6 @@ cache:
 
     Oec::DepartmentMappings: <%= 4.hours %>
 
-# Cache warmer settings
-cache_warmer:
-  # Number to decrement db pool to limit the number of warmer threads
-  fudge_factor: 1
-
-# Bearfacts JMS event queue
-ist_jms:
-  fake: true
-  enabled: true
-  freshen_recording: false
-  connections:
-    - url: 'tcp://localhost:61616'
-      queues: [ 'testqueue' ]
-      #  username: USERNAME
-      #  password: PASSWORD
-
 # This will enable http basic auth for the app and should NEVER be enabled in production
 developer_auth:
   enabled: false
@@ -332,58 +276,9 @@ oec:
   }]
   departments: [ 'A,RESEC', 'BIOLOGY', 'CATALAN', 'CHEM', 'DATASCI', 'ECON', 'ENE,RES', 'ENVECON', 'EPS', 'ESPM', 'GWS', 'INFO', 'INTEGBI', 'LGBT', 'LINGUIS', 'MATH', 'MCELLBI', 'NUSCTX', 'PHYSICS', 'PLANTBI', 'POL SCI', 'PORTUG', 'PSYCH', 'SPANISH', 'STAT' ]
 
-ui_selenium:
-  base_url: https://calcentral-dev.berkeley.edu
-  cal_net_url: https://auth-test.berkeley.edu
-  canvas_base_url: https://ucberkeley.beta.instructure.com
-  canvas_qa_sub_account: secret
-  google_auth_url: /api/google/request_authorization?force_domain=false
-  layer: development
-
-  # Alternative browsers for Selenium tests: chrome, safari, ie
-  web_driver: firefox
-
-  google_task_timeout: 12
-  page_event_timeout: 10
-  page_load_timeout: 20
-  academics_timeout: 20
-  canvas_update_timeout: 60
-  canvas_username: secret
-  canvas_password: secret
-  canvas_id: secret
-  test_user_password: secret
-  ets_qa_ldap_username: secret
-  ets_qa_ldap_password: secret
-  ets_qa_gmail_username: secret
-  ets_qa_gmail_password: secret
-  admin_uid: secret
-
-campus_solutions_proxy:
-  fake: true
-  base_url: 'https://bcs-web-dev-03.is.berkeley.edu:8443/PSIGW/RESTListeningConnector/PSFT_CS'
-  logout_url: 'https://bcs-web-dev-03.is.berkeley.edu:8443/psp/logout/EMPLOYEE/HRMS/?cmd=logout'
-  username: secret
-  password: secret
-  http_timeout_seconds: 30
-
 hub_edos_proxy:
   fake: true
   base_url: 'https://sis-integration.berkeley.edu/apis/sis/v1/students'
-  username: secret
-  password: secret
-  http_timeout_seconds: 30
-
-hub_enrollments_proxy:
-  fake: true
-  base_url: 'https://sis-integration.berkeley.edu/dev/apis/sis/v2/enrollments/students'
-  username: secret
-  password: secret
-  http_timeout_seconds: 30
-
-calnet_crosswalk_proxy:
-  fake: true
-  enabled: true
-  base_url: 'https://registry-d1.calnet.1918.berkeley.edu:8453/registry-service/api/v1/identifiers'
   username: secret
   password: secret
   http_timeout_seconds: 30
@@ -411,54 +306,17 @@ edw_db:
 
 # A feature will be disabled if the corresponding feature-flag is false or nil.
 features:
-  advising: false
-  advising_academic_planner: false
-  advising_student_success: false
-  allow_legacy_fallback: true
+  allow_legacy_fallback: false
   allow_alt_email_addr_for_enrollments: true
   authentication_validator: false
   background_jobs_check: true
   cal1card: false
-  campus_links_from_file: false
-  class_info_enrollment_section_overview: false
-  class_info_enrollment_tab: false
   course_manage_official_sections: false
-  cs_academic_planner: false
-  cs_advising_links: false
-  cs_advisor_student_lookup: false
-  cs_billing: false
-  cs_committees: false
-  cs_degree_progress_grad_advising: false
-  cs_degree_progress_grad_student: false
-  cs_degree_progress_ugrd_advising: false
-  cs_degree_progress_ugrd_student: false
-  cs_degree_progress_ugrd_student_apr_coe: false
-  cs_delegated_access: false
-  cs_enrollment_card: false
-  cs_fin_aid: false
-  cs_fin_aid_award_compare: false
-  cs_logout: false
-  cs_profile: true
-  cs_profile_emergency_contacts: false
-  cs_profile_languages: false
-  cs_profile_work_experience: false
-  cs_sir: true
-  enrollment_verification: false
-  final_exam_schedule_student: false
-  final_exam_schedule_instructor: false
-  gpa_calculator: true
   hub_term_api: true
   ldap_student_affiliations: false
   legacy_caldap: true
   manage_site_mailing_lists: false
-  my_fin_aid: false
   prevent_acting_as_users_from_posting: true
   reauthentication: true
-  regstatus: true
-  reserved_capacity: false
-  reserved_capacity_link: false
-  standings: true
-  textbooks: false
-  transcript_request_link_cred_solutions: false
   videos: false
   webcast_sign_up_on_calcentral: false

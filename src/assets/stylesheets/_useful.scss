@@ -156,63 +156,6 @@ $cc-spinner-uneven: 17px;
   text-align: center;
 }
 
-// Popover
-.cc-popover {
-  background: $cc-color-whisper;
-  border-radius: 5px;
-  box-shadow: 0 5px 10px $cc-color-black-transparent;
-  padding: 0;
-  position: absolute;
-  z-index: 100;
-
-  h4 {
-    color: $body-font-color;
-    font-size: 16px;
-    margin: 0 0 10px;
-  }
-
-  p {
-    line-height: 1;
-    margin: 10px 0 0;
-  }
-}
-.cc-popover-arrow {
-  &::after, &::before {
-    bottom: 100%;
-    content: "";
-    position: absolute;
-    right: 10%;
-  }
-
-  // This allows us to create an arrow for the popover
-  // We also add a border by painting another arrow behind the first one
-  &::after {
-    border-bottom: 10px solid $cc-color-whisper;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    margin-left: -10px;
-  }
-  &::before {
-    border-bottom: 11px solid $cc-color-very-light-grey;
-    border-left: 11px solid transparent;
-    border-right: 11px solid transparent;
-    margin-left: -11px;
-  }
-}
-.cc-popover-container {
-  position: relative;
-}
-
-.cc-dropdown {
-  min-width: 80px;
-  position: absolute;
-  right: 0;
-  width: auto;
-  button {
-    display: block;
-  }
-}
-
 // Image replacement
 .cc-ir {
   background-color: transparent;
