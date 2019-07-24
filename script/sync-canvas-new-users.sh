@@ -21,7 +21,7 @@ mkdir -p "${HEAP_DUMP_DIR}"
 export RAILS_ENV=${RAILS_ENV:-production}
 export LOGGER_STDOUT=only
 export LOGGER_LEVEL=INFO
-export JRUBY_OPTS="--dev -J-Xmn512m -J-Xms2048m -J-Xmx2048m -J-XX:+HeapDumpOnOutOfMemoryError -J-XX:HeapDumpPath=${HEAP_DUMP_DIR}"
+export JRUBY_OPTS="-Xcompile.invokedynamic=false -J-XX:+UseConcMarkSweepGC -J-XX:+CMSPermGenSweepingEnabled -J-XX:+CMSClassUnloadingEnabled -J-Xmx1024m"
 
 echo | ${LOGIT}
 echo "------------------------------------------" | ${LOGIT}
