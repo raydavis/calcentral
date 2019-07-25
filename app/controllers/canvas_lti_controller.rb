@@ -40,7 +40,7 @@ class CanvasLtiController < ApplicationController
 
     session['canvas_user_id'] = canvas_user_id
     session['canvas_course_id'] = canvas_course_id
-    session['user_id'] = User::AuthenticationValidator.new(canvas_user_login_id).validated_user_id
+    session['user_id'] = canvas_user_login_id
   end
 
   def check_for_masquerade(masquerading_user_id)
