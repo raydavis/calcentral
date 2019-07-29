@@ -23,19 +23,9 @@ module CanvasCsv
 
     # Prepares Canvas report containing all users for iteration during processing
     def get_canvas_user_report_file
-      get_report = Proc.new do
-        filename = "#{@export_dir}/canvas-#{DateTime.now.strftime('%F_%H-%M-%S')}-users-report.csv"
-        csv_table = Canvas::Report::Users.new.get_csv
-        headers = csv_table.headers.join(',')
-        file = CSV.open(filename, 'wb', headers: headers, write_headers: true)
-        logger.warn "Canvas user report obtained containing data on #{csv_table.count} user accounts"
-        csv_table.each do |row|
-          file << row
-        end
-        file.close
-        file.path
-      end
-      @canvas_user_report_file_path ||= get_report.call
+      @canvas_user_report_filename = "#{@export_dir}/canvas-#{DateTime.now.strftime('%F_%H-%M-%S')}-users-report.csv"
+      Canvas::Report::Users.new(download_to_file: @canvas_user_report_filename).get_csv
+      @canvas_user_report_filename
     end
 
     def load_new_active_users
@@ -71,7 +61,7 @@ module CanvasCsv
       rows = EdoOracle::Bcourses.get_all_active_people_uids
       all_active_sis_user_uids = rows.to_set
       all_current_canvas_uids = []
-      CSV.foreach(get_canvas_user_report_file, headers: :first_row) do |canvas_user|
+      CSV.foreach(@canvas_user_report_filename, headers: :first_row) do |canvas_user|
         if (existing_ldap_uid = MaintainUsers.parse_login_id(canvas_user['login_id'])[:ldap_uid])
           all_current_canvas_uids << existing_ldap_uid.to_s
         end
