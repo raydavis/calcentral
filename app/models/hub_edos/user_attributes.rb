@@ -7,55 +7,25 @@ module HubEdos
     include ClassLogger
 
     def initialize(options = {})
-      @uid = options[:user_id]
+      @campus_solutions_id = options[:sid]
     end
 
     def self.test_data?
       Settings.hub_edos_proxy.fake.present?
     end
 
-    def get_ids(result)
-      result[:ldap_uid] = @uid
-
-      # Hub and CampusSolutions APIs will be unreachable unless a CS ID is provided from Crosswalk or SAML assertions.
-      @campus_solutions_id = lookup_campus_solutions_id
-      result[:campus_solutions_id] = @campus_solutions_id
-
-      result[:is_legacy_student] = has_legacy_student_data?(@campus_solutions_id)
-    end
-
-    def get_edo
-      # A valid Hub Contacts payload will incorporate the payload of the Affiliations API.
-      contacts = get_edo_feed(Contacts)
-      if contacts.blank?
-        get_edo_feed(Affiliations)
-      else
-        contacts
-      end
-    end
-
-    def get_edo_feed(api_class)
-      response = api_class.new(user_id: @uid).get
-      if (feed = HashConverter.symbolize response[:feed])
-        feed[:student]
-      else
-        nil
-      end
-    end
-
     def get
-      wrapped_result = handling_exceptions(@uid) do
-        result = {}
-        get_ids result
-        if @campus_solutions_id.present? && (edo = get_edo)
-          identifiers_check edo
+      wrapped_result = handling_exceptions(@campus_solutions_id) do
+        edo = get_edo_feed
+        result = get_ids edo
+        if result
           extract_roles(edo, result)
           extract_passthrough_elements(edo, result)
           extract_names(edo, result)
           extract_emails(edo, result)
           result[:statusCode] = 200
         else
-          logger.warn "Could not get Student EDO data for UID #{@uid}"
+          logger.warn "Could not get Student EDO data for SID #{@campus_solutions_id}"
           result[:noStudentId] = true
         end
         result
@@ -63,17 +33,39 @@ module HubEdos
       wrapped_result[:response]
     end
 
-    def has_role?(*roles)
-      if lookup_campus_solutions_id.present? && (edo = get_edo)
-        result = {}
-        extract_roles(edo, result)
-        if (user_role_map = result[:roles])
-          roles.each do |role|
-            return true if user_role_map[role]
-          end
+    def get_ids(edo)
+      identifiers = edo[:identifiers]
+      if identifiers.blank?
+        logger.error "No 'identifiers' found in CS attributes #{edo} for CS ID #{@campus_solutions_id}"
+        {}
+      else
+        student_id = identifiers.select {|id| id[:type] == 'student-id'}.first
+        if student_id.blank?
+          logger.error "No 'student-id' found in CS Identifiers #{identifiers} for CS ID #{@campus_solutions_id}"
+        else
+          student_id = student_id[:id]
         end
+        campus_uid = identifiers.select {|id| id[:type] == 'campus-uid'}.first
+        if campus_uid.blank?
+          logger.error "No 'campus-uid' found in CS Identifiers #{identifiers} for CS ID #{@campus_solutions_id}"
+        else
+          campus_uid = campus_uid[:id]
+          @uid = campus_uid
+        end
+        {
+          campus_solutions_id: student_id,
+          ldap_uid: campus_uid
+        }
       end
-      false
+    end
+
+    def get_edo_feed
+      response = V2StudentsApi.new(sid: @campus_solutions_id).get
+      if (feed = HashConverter.symbolize response[:feed])
+        feed
+      else
+        nil
+      end
     end
 
     def identifiers_check(edo)
@@ -95,7 +87,7 @@ module HubEdos
     end
 
     def extract_passthrough_elements(edo, result)
-      [:names, :addresses, :phones, :emails, :ethnicities, :languages, :emergencyContacts].each do |field|
+      [:names, :emails].each do |field|
         if edo[field].present?
           result[field] = edo[field]
         end

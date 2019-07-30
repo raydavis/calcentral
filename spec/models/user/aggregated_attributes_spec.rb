@@ -18,7 +18,6 @@ describe User::AggregatedAttributes do
   end
   let(:edo_attributes) do
     base_edo_attributes.merge(
-      is_legacy_student: false,
       roles: {
         student: true
       }
@@ -30,6 +29,7 @@ describe User::AggregatedAttributes do
   let(:base_ldap_attributes) do
     {
       ldap_uid: uid,
+      campus_solutions_id: campus_solutions_id,
       first_name: first_name_from_ldap,
       last_name: last_name_from_ldap,
       official_bmail_address: bmail_from_ldap,
@@ -49,14 +49,13 @@ describe User::AggregatedAttributes do
   subject { User::AggregatedAttributes.new(uid).get_feed }
 
   before(:each) do
-    allow(HubEdos::UserAttributes).to receive(:new).with(user_id: uid).and_return double get: edo_attributes
     allow(CalnetLdap::UserAttributes).to receive(:new).with(user_id: uid).and_return double get_feed: ldap_attributes
+    allow(HubEdos::UserAttributes).to receive(:new).with(sid: campus_solutions_id).and_return double get: edo_attributes
   end
 
   describe 'all systems available' do
     context 'Hub feed' do
       it 'should return edo user attributes' do
-        expect(subject[:isLegacyStudent]).to be false
         expect(subject[:officialBmailAddress]).to eq bmail_from_edo
         expect(subject[:campusSolutionsId]).to eq campus_solutions_id
         expect(subject[:studentId]).to eq campus_solutions_id
@@ -107,7 +106,6 @@ describe User::AggregatedAttributes do
       context 'EDO does not know about former student status' do
         let(:edo_attributes) do
           base_edo_attributes.merge(
-            is_legacy_student: false,
             roles: {
               advisor: true
             }

@@ -2,14 +2,14 @@
 describe HubEdos::UserAttributes do
 
   let(:user_id) { '61889' }
+  let(:sid) { '11667051' }
   let(:confidential_student) { false }
-  let(:fake_contact_proxy) { HubEdos::Contacts.new(fake: true, user_id: user_id) }
+  let(:fake_api_proxy) { HubEdos::V2StudentsApi.new(fake: true, sid: sid) }
   before do
-    allow(HubEdos::Contacts).to receive(:new).and_return fake_contact_proxy
-    allow(CalnetLdap::UserAttributes).to receive(:new).and_return double(get_feed: {campus_solutions_id: '11667051'})
+    allow(HubEdos::V2StudentsApi).to receive(:new).and_return fake_api_proxy
   end
 
-  subject { HubEdos::UserAttributes.new(user_id: user_id).get }
+  subject { HubEdos::UserAttributes.new(sid: sid).get }
 
   it 'should provide the converted person data structure' do
     expect(subject[:ldap_uid]).to eq '61889'
@@ -19,22 +19,21 @@ describe HubEdos::UserAttributes do
     expect(subject[:family_name]).to eq 'Bear'
     expect(subject[:first_name]).to eq 'Ziggy'
     expect(subject[:last_name]).to eq 'Stardust'
-    expect(subject[:person_name]).to eq 'Ziggy  Stardust '
+    expect(subject[:person_name]).to eq 'Ziggy Stardust '
     expect(subject[:email_address]).to eq 'oski@gmail.com'
     expect(subject[:official_bmail_address]).to eq 'oski@berkeley.edu'
     expect(subject[:names]).to be
-    expect(subject[:addresses]).to be
     expect(subject[:roles]).to include(:applicant => true, :releasedAdmit => true)
   end
 
   describe 'student_id depends on role' do
     before do
-      allow_any_instance_of(HubEdos::Contacts).to receive(:get).and_return(
-        {feed: {'student' => {
+      allow_any_instance_of(HubEdos::V2StudentsApi).to receive(:get).and_return(
+        {feed: {
           'identifiers' => [{'id' => '11667051', 'type' => 'student-id'}],
           'affiliations' => affiliations,
           'confidential' => confidential_student
-        }}}
+        }}
       )
     end
     context 'non-student with Campus Solutions ID' do
@@ -69,28 +68,9 @@ describe HubEdos::UserAttributes do
     end
   end
 
-  context 'Contacts feed contains all necessary data' do
-    it 'does not bother calling the Affiliations API' do
-      expect(HubEdos::Affiliations).to receive(:new).never
-      expect(subject[:roles]).to include({applicant: true, releasedAdmit: true})
-    end
-  end
-  context 'Contacts feed is unexpectedly reticent' do
-    let(:fake_affiliations_proxy) { HubEdos::Affiliations.new(fake: true, user_id: user_id) }
-    before do
-      allow_any_instance_of(HubEdos::Contacts).to receive(:get).and_return(
-        {feed: {'student' => {}}}
-      )
-    end
-    it 'reluctantly falls back on the Affiliations API' do
-      expect(HubEdos::Affiliations).to receive(:new).and_return fake_affiliations_proxy
-      expect(subject[:roles]).to include({applicant: true, releasedAdmit: true})
-    end
-  end
-
   context 'unexpected errors from Hub calls' do
     before do
-      allow_any_instance_of(HubEdos::Contacts).to receive(:get_internal).and_return({'non' => 'sense'})
+      allow_any_instance_of(HubEdos::V2StudentsApi).to receive(:get_internal).and_return({'non' => 'sense'})
     end
     it 'returns from errors' do
       expect(subject).to eq({
@@ -108,14 +88,5 @@ describe HubEdos::UserAttributes do
       }
     )
     expect(subject[:roles]).to eq({chancellor: true, graduate: true})
-  end
-
-  describe '#has_role' do
-    subject { HubEdos::UserAttributes.new(user_id: user_id) }
-    it 'finds matching roles' do
-      expect(subject.has_role?(:student, :applicant)).to be_truthy
-      expect(subject.has_role?(:student)).to be_falsey
-      expect(subject.has_role?(:applicant)).to be_truthy
-    end
   end
 end

@@ -8,19 +8,16 @@ module User
     end
 
     def get_feed_internal
-      @edo_attributes = HubEdos::UserAttributes.new(user_id: @uid).get
       @ldap_attributes = CalnetLdap::UserAttributes.new(user_id: @uid).get_feed
-      campus_solutions_id = @edo_attributes[:campus_solutions_id] if @edo_attributes.present?
-      unknown = @ldap_attributes.blank? && campus_solutions_id.blank?
-      # TODO isLegacyStudent is no longer used.
-      is_legacy_student = !unknown && (campus_solutions_id.blank? || @edo_attributes[:is_legacy_student])
+      unknown = @ldap_attributes.blank?
+      campus_solutions_id = @ldap_attributes[:campus_solutions_id]
+      @edo_attributes = campus_solutions_id ? HubEdos::UserAttributes.new(sid: campus_solutions_id).get : {}
       @roles = get_campus_roles
       first_name = get_campus_attribute('first_name', :string) || ''
       last_name = get_campus_attribute('last_name', :string) || ''
       {
         ldapUid: @uid,
         unknown: unknown,
-        isLegacyStudent: is_legacy_student,
         roles: @roles,
         defaultName: get_campus_attribute('person_name', :string),
         firstName: first_name,
