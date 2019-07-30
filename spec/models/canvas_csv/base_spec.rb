@@ -69,8 +69,8 @@ describe CanvasCsv::Base do
       let(:download_filename) { nil }
       it 'returns parsed CSV' do
         result = subject.get_csv
-        expect(result.length).to eq 3
-        expect(result.first['first_name']).to eq 'Ray'
+        expect(result.length).to eq 4
+        expect(result.first['first_name']).to eq 'John'
       end
     end
     context 'downloading to the file system' do
@@ -80,8 +80,8 @@ describe CanvasCsv::Base do
         result = subject.get_csv
         expect(result).to eq download_filename
         copied_csv = CSV.read(download_filename, headers: true)
-        expect(copied_csv.length).to eq 3
-        expect(copied_csv.first['first_name']).to eq 'Ray'
+        expect(copied_csv.length).to eq 4
+        expect(copied_csv.first['first_name']).to eq 'John'
       end
     end
   end

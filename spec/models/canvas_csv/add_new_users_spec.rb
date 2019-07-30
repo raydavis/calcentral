@@ -1,15 +1,5 @@
 describe CanvasCsv::AddNewUsers do
 
-  let(:user_report_csv_string) do
-    [
-      'canvas_user_id,user_id,login_id,first_name,last_name,full_name,email,status',
-      '123,22729403,946123,John,Smith,john.smith@berkeley.edu,active',
-      '124,UID:946124,946124,Jane,Smith,Jane Smith,janesmith@gmail.com,active',
-      '125,UID:946125,inactive-946125,Charmaine,Golden,Charmaine Golden,charmainedgolden@berkeley.edu,active',
-      '126,22729407,946126,Brian,Warner,Brian Warner,bwarner@example.com,active'
-     ].join("\n")
-  end
-
   let(:sis_active_uids) { %w(946122 946123 946124 946125 946126 946127).to_set }
   let(:sis_active_people) do
     [
@@ -18,7 +8,6 @@ describe CanvasCsv::AddNewUsers do
     ]
   end
 
-  let(:user_report_csv) { CSV.parse(user_report_csv_string, {headers: true}) }
   let(:fake_now_datetime) { DateTime.strptime('2014-07-23T09:00:06+07:00', '%Y-%m-%dT%H:%M:%S%z') }
   let(:new_canvas_users) do
     [
@@ -29,7 +18,6 @@ describe CanvasCsv::AddNewUsers do
 
   before do
     allow(DateTime).to receive(:now).and_return(fake_now_datetime)
-    allow_any_instance_of(Canvas::Report::Users).to receive(:get_csv).and_return(user_report_csv)
     allow(EdoOracle::Bcourses).to receive(:get_all_active_people_uids).and_return(sis_active_uids)
     allow(User::BasicAttributes).to receive(:attributes_for_uids).and_return(sis_active_people)
 
@@ -96,23 +84,12 @@ describe CanvasCsv::AddNewUsers do
       expect(csv_array[2][2]).to eq '946124'
       expect(csv_array[3][2]).to eq 'inactive-946125'
     end
-
-    it 'returns existing file path if user report already obtained' do
-      expect_any_instance_of(Canvas::Report::Users).to receive(:get_csv).once.and_return(user_report_csv)
-      result_1 = subject.get_canvas_user_report_file
-      expect(result_1).to be_an_instance_of String
-      expect(result_1).to eq 'tmp/canvas/canvas-2014-07-23_09-00-06-users-report.csv'
-      expect(File.exists?(result_1)).to be_truthy
-      result_2 = subject.get_canvas_user_report_file
-      expect(result_2).to be_an_instance_of String
-      expect(result_2).to eq 'tmp/canvas/canvas-2014-07-23_09-00-06-users-report.csv'
-      expect(File.exists?(result_2)).to be_truthy
-    end
   end
 
   describe '#load_new_active_users' do
     it 'loads new active users into array' do
       expect(User::BasicAttributes).to receive(:attributes_for_uids).with(['946122','946127']).and_return(sis_active_people)
+      subject.get_canvas_user_report_file
       subject.load_new_active_users
       loaded_users = subject.instance_eval { @new_active_sis_users }
       expect(loaded_users).to be_an_instance_of Array
@@ -130,6 +107,7 @@ describe CanvasCsv::AddNewUsers do
     it 'loads empty array when no new active users' do
       allow(subject).to receive(:new_active_user_uids).and_return([])
       expect(User::BasicAttributes).to_not receive(:attributes_for_uids)
+      subject.get_canvas_user_report_file
       subject.load_new_active_users
       loaded_users = subject.instance_eval { @new_active_sis_users }
       expect(loaded_users).to eq []
@@ -164,6 +142,7 @@ describe CanvasCsv::AddNewUsers do
 
   describe '#new_active_user_uids' do
     it 'returns array new active user UIDs' do
+      subject.get_canvas_user_report_file
       result = subject.new_active_user_uids
       expect(result).to include '946122'
       expect(result).to include '946127'
