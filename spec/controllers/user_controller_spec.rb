@@ -2,6 +2,11 @@ describe UserController do
   let (:user_id) { random_id }
   before do
     session['user_id'] = user_id
+
+    CalnetLdap::UserAttributes.stub_chain(:new, :get_feed).and_return({
+      ldap_uid: user_id,
+      campus_solutions_id: user_id
+    })
     HubEdos::UserAttributes.stub_chain(:new, :get).and_return({
       :person_name => 'Joe Test',
       :first_name => 'Joe',

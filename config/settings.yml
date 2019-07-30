@@ -16,11 +16,6 @@ application:
   # Restrict deployment to the SIS service 'calcentral' or the ETS services 'bcourses' and 'oec'.
   provided_services: ['bcourses', 'oec']
 
-slate_auth_handler:
-  client: 'Slate'
-  handler: 'ClientAuthenticationHandler'
-  handler_casv5: 'slateAuthenticationHandler'
-
 logger:
   level: <%= ENV['LOGGER_LEVEL'] || WARN %>
   stdout: <%= ENV['LOGGER_STDOUT'] %>
@@ -278,7 +273,7 @@ oec:
 
 hub_edos_proxy:
   fake: true
-  base_url: 'https://sis-integration.berkeley.edu/apis/sis/v1/students'
+  base_url: 'https://sis-integration.berkeley.edu/apis/sis/v2/students'
   username: secret
   password: secret
   http_timeout_seconds: 30

@@ -34,7 +34,6 @@ describe User::Api do
   let(:family_name) { 'Family' }
   let(:user_attributes) do
     {
-      isLegacyStudent: false,
       roles: roles,
       defaultName: default_name,
       firstName: first_name,
