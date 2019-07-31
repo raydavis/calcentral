@@ -58,13 +58,14 @@ module HubEdos
       logger.debug "Remote server status #{response.code}, Body = #{response.body.force_encoding('UTF-8')}"
       if response.code == 404
         description = response.fetch('apiResponse', {}).fetch('httpStatus', {}).fetch('description', nil)
+        # The V2 Students API only responds to CS IDs for known students, and so 'Not Found' is no longer a
+        # condition rare enough to be worth logging.
         if description == 'Not Found'
-          logger.warn "Response #{response['apiResponse']} for Campus Solutions ID #{@sid}"
-          feed = parse_response response
+          feed = {}
           student_not_found = true
         else
           logger.error "Unexpected 404 response for Campus Solutions ID #{@sid}: #{response}"
-          feed = empty_feed
+          feed = {}
         end
      else
         wrapped_feed = parse_response response

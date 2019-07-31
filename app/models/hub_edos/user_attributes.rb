@@ -16,16 +16,22 @@ module HubEdos
 
     def get
       wrapped_result = handling_exceptions(@campus_solutions_id) do
-        edo = get_edo_feed
+        response = V2StudentsApi.new(sid: @campus_solutions_id).get
+        if response[:studentNotFound] || response[:feed].blank?
+          logger.info "Could not get Student EDO data for SID #{@campus_solutions_id}"
+          return {
+            noStudentId: true
+          }
+        end
+        edo = HashConverter.symbolize response[:feed]
         result = get_ids edo
-        if result
+        if result.present?
           extract_roles(edo, result)
           extract_passthrough_elements(edo, result)
           extract_names(edo, result)
           extract_emails(edo, result)
           result[:statusCode] = 200
         else
-          logger.warn "Could not get Student EDO data for SID #{@campus_solutions_id}"
           result[:noStudentId] = true
         end
         result
@@ -56,33 +62,6 @@ module HubEdos
           campus_solutions_id: student_id,
           ldap_uid: campus_uid
         }
-      end
-    end
-
-    def get_edo_feed
-      response = V2StudentsApi.new(sid: @campus_solutions_id).get
-      if (feed = HashConverter.symbolize response[:feed])
-        feed
-      else
-        nil
-      end
-    end
-
-    def identifiers_check(edo)
-      # CS Identifiers simply treat 'student-id' as a synonym for the Campus Solutions ID / EmplID, regardless
-      # of whether the user has ever been a student. (In contrast, CalNet LDAP's 'berkeleyedustuid' attribute
-      # only appears for current or former students.)
-      identifiers = edo[:identifiers]
-      if identifiers.blank?
-        logger.error "No 'identifiers' found in CS attributes #{edo} for UID #{@uid}, CS ID #{@campus_solutions_id}"
-      else
-        edo_id = identifiers.select {|id| id[:type] == 'student-id'}.first
-        if edo_id.blank?
-          logger.error "No 'student-id' found in CS Identifiers #{identifiers} for UID #{@uid}, CS ID #{@campus_solutions_id}"
-          return false
-        elsif edo_id[:id] != @campus_solutions_id
-          logger.error "Got student-id #{edo_id[:id]} from CS Identifiers but CS ID #{@campus_solutions_id} from Crosswalk for UID #{@uid}"
-        end
       end
     end
 
