@@ -13,6 +13,9 @@ module User
       campus_solutions_id = @ldap_attributes[:campus_solutions_id]
       @edo_attributes = campus_solutions_id ? HubEdos::UserAttributes.new(sid: campus_solutions_id).get : {}
       @roles = get_campus_roles
+      if @roles[:student] && @edo_attributes[:noStudentId]
+        logger.warn "UID #{@uid} CSID #{campus_solutions_id} has a student role but no result from SIS Students API"
+      end
       first_name = get_campus_attribute('first_name', :string) || ''
       last_name = get_campus_attribute('last_name', :string) || ''
       {
@@ -46,12 +49,13 @@ module User
 
     # Split brain three ways until some subset of the brain proves more trustworthy.
     def get_campus_attribute(field, format)
-      (@roles[:student] || @roles[:applicant]) &&
+      if (@roles[:student] || @roles[:applicant]) &&
         @edo_attributes[:noStudentId].blank? && (edo_attribute = @edo_attributes[field.to_sym])
-      begin
-        validated_edo_attribute = validate_attribute(edo_attribute, format)
-      rescue
-        logger.error "EDO attribute #{field} failed validation for UID #{@uid}: expected a #{format}, got #{edo_attribute}"
+        begin
+          validated_edo_attribute = validate_attribute(edo_attribute, format)
+        rescue
+          logger.error "EDO attribute #{field} failed validation for UID #{@uid}: expected a #{format}, got #{edo_attribute}"
+        end
       end
       validated_edo_attribute || @ldap_attributes[field.to_sym]
     end
