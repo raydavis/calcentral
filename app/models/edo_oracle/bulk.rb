@@ -287,5 +287,20 @@ module EdoOracle
       SQL
       safe_query(sql, do_not_stringify: true)
     end
+
+    def self.get_term_gpas(term_id)
+      sql = <<-SQL
+        SELECT DISTINCT
+          reg.student_id,
+          reg.term_id,
+          reg.termunits_tot_enrolled,
+          reg.termunits_gpa_enrolled,
+          reg.termgpa_average
+        FROM sisedo.student_registrationv01_vw reg
+        WHERE reg.term_id = '#{term_id}'
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
+
   end
 end

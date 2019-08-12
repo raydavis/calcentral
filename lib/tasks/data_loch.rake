@@ -40,6 +40,12 @@ namespace :data_loch do
     end
   end
 
+  desc 'Upload Term GPAs to data loch S3'
+  task :term_gpas => :environment do
+    term_id = ENV['TERM_ID']
+    DataLoch::Stocker.new().upload_term_gpas(term_id, s3_targets)
+  end
+
   desc 'Upload College of Letters & Science student info to data loch S3'
   task :l_and_s => :environment do
     DataLoch::Stocker.new().upload_l_and_s_students(s3_targets)
