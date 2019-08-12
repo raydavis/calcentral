@@ -1,8 +1,6 @@
-# CalCentral
+# ETS Junction
 
-[![Dependency Status](https://img.shields.io/gemnasium/ets-berkeley-edu/calcentral.svg)](https://gemnasium.com/ets-berkeley-edu/calcentral) [![devDependency Status](https://david-dm.org/ets-berkeley-edu/calcentral/dev-status.svg)](https://david-dm.org/ets-berkeley-edu/calcentral#info=devDependencies) [![Code Climate](https://img.shields.io/codeclimate/github/ets-berkeley-edu/calcentral.svg)](https://codeclimate.com/github/ets-berkeley-edu/calcentral)
 * Master Build: [![Build Status](https://api.travis-ci.org/ets-berkeley-edu/calcentral.svg?branch=master)](https://travis-ci.org/ets-berkeley-edu/calcentral)
-* QA Build: [![Build Status](https://api.travis-ci.org/ets-berkeley-edu/calcentral.svg?branch=qa)](https://travis-ci.org/ets-berkeley-edu/calcentral)
 
 ## Dependencies
 
@@ -232,13 +230,6 @@ npm run lint
 ```
 
 This will check for any potential JavaScript issues and whether you formatted the code correctly.
-
-## Role-Aware Testing
-
-Some features of CalCentral are only accessible to users with particular roles, such as `student`.
-These features may be invisible when logged in as yourself. In particular:
-
-- My Academics will only appear in the navigation if logged in as a student. However, the "Oski Bear" test student does not fake data loaded on dev and QA. To test My Academics, log in as user  `test-212385` or `test-212381` (ask a developer for the passwords to these if you need them). Once logged in as a test student, append `/academics` to the URL to access My Academics.
 
 ## Debugging
 
