@@ -77,12 +77,39 @@ describe DataLoch::Stocker do
     end
   end
 
+  context 'Term GPAs data' do
+    let(:registration_columns) do
+      %w(student_id term_id termunits_tot_enrolled termunits_gpa_enrolled termgpa_average)
+    end
+    let(:registration_rows) do
+      [
+        ['87654322', term_code, 15.5, 7, 3.666],
+        ['87654321', term_code, 6, 0, 0]
+      ]
+    end
+    it 'writes GPAs to a zipped historical TSV' do
+      expect(EdoOracle::Bulk).to receive(:get_term_gpas).with(term_code).and_return double(
+        columns: registration_columns,
+        rows: registration_rows
+      )
+      expect(DataLoch::S3).to receive(:new).and_return (mock_s3 = double)
+      expect(mock_s3).to receive(:upload).with('historical/gpa', "tmp/data_loch/term_gpa_#{term_code}.gz").and_return true
+      expect(subject).to receive(:clean_tmp_files).with(["tmp/data_loch/term_gpa_#{term_code}.gz"])
+
+      subject.upload_term_gpas(term_code, ['s3_test'])
+      tsv_rows = unzipped("term_gpa_#{term_code}")
+      expect(tsv_rows).to have(2).items
+      expect(tsv_rows[0]).to eq "87654322\t2182\t15.5\t7\t3.666"
+      expect(tsv_rows[1]).to eq "87654321\t2182\t6\t0\t0"
+    end
+  end
+
   context 'EDW advisee data' do
     let(:advisee_sids) do
       %w(87654321 87654322)
     end
     let(:socio_econ_columns) do
-      %w(sid, lcff, first_gen, socio_econ, parent_income)
+      %w(sid lcff first_gen socio_econ parent_income)
     end
     let(:socio_econ_rows) do
       [

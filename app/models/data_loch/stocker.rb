@@ -93,6 +93,18 @@ module DataLoch
       end
     end
 
+    def upload_term_gpas(term_id, s3_targets)
+      Rails.logger.warn "Starting historical Term GPAs snapshot for term id #{term_id}, targets #{s3_targets}."
+      s3s = s3_from_names s3_targets
+      logger.info "Starting GPA snapshots for term #{term_id}."
+      output_path = DataLoch::Zipper.zip_query("term_gpa_#{term_id}", 'TSV') do
+        EdoOracle::Bulk.get_term_gpas(term_id)
+      end
+      s3s.each {|s3| s3.upload('historical/gpa', output_path) }
+      clean_tmp_files([output_path])
+      logger.info "GPA snapshot complete for term #{term_id}."
+    end
+
     def upload_advisee_data(s3_targets, jobs)
       # It seems safest to fetch the list of advisee SIDs from the same S3 environment which will receive their results,
       # but this could mean executing nearly the same large DB query multiple times in a row.

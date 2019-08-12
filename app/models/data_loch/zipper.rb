@@ -55,7 +55,11 @@ module DataLoch
           next if raw.nil? || raw.is_a?(String)
           r[idx] = raw.to_i
         end
-        gz.write r.to_csv if format == 'CSV'
+        if format == 'CSV'
+          gz.write r.to_csv
+        elsif format == 'TSV'
+          gz.write r.to_csv(col_sep: "\t")
+        end
       end
       gz.write results.to_json if format == 'JSON'
     end
