@@ -54,5 +54,6 @@ cache:
 features:
   allow_legacy_fallback: true
   cal1card: true
+  hub_term_api: true
   videos: true
   webcast_sign_up_on_calcentral: true

@@ -72,7 +72,8 @@ terms:
   # from the default.
   fake_now:
   # If hub term API is disabled (see hub_term_api in features flags),
-  # use /public/json/terms.json or this file
+  # and this flag is false, query the EDO DB for terms data.
+  # If this flag is true, use /public/json/terms.json or the file specified below.
   use_term_definitions_json_file: false
   term_definitions_json_file:
 
@@ -307,7 +308,7 @@ features:
   background_jobs_check: true
   cal1card: false
   course_manage_official_sections: false
-  hub_term_api: true
+  hub_term_api: false
   ldap_student_affiliations: false
   legacy_caldap: true
   manage_site_mailing_lists: false

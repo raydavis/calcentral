@@ -134,8 +134,9 @@ module Berkeley
     end
 
     def load_terms_from_edo_db
+      oldest_term_id = Berkeley::TermCodes.slug_to_edo_id(@oldest)
       cs_terms = []
-      edo_db_terms = EdoOracle::Queries.get_undergrad_terms
+      edo_db_terms = EdoOracle::Queries.get_undergrad_terms(oldest_term_id)
       edo_db_terms.each_with_index do |term, index|
         new_term = Berkeley::Term.new.from_edo_db(term)
         cs_terms << new_term
