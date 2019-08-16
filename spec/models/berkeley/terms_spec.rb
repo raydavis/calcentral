@@ -312,9 +312,9 @@ describe Berkeley::Terms do
       before do
         allow(Settings.features).to receive(:hub_term_api).and_return false
         allow(Settings.features).to receive(:use_term_definitions_json_file).and_return false
-        allow(EdoOracle::Queries).to receive(:get_undergrad_terms).and_return term_data
+        allow(EdoOracle::Queries).to receive(:get_undergrad_terms).with('2162').and_return term_data
       end
-      subject { Berkeley::Terms.new(fake_now: DateTime.parse('2018-07-12')) }
+      subject { Berkeley::Terms.new(fake_now: DateTime.parse('2018-07-12'), oldest: 'spring-2016') }
       it 'loads terms from edodb with only 2 future terms and sorted in proper order' do
         terms = subject.load_terms_from_edo_db
         expect(terms.length).to eq 7

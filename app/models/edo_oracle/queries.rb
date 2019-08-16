@@ -798,7 +798,7 @@ module EdoOracle
       SQL
     end
 
-    def self.get_undergrad_terms
+    def self.get_undergrad_terms(oldest_term_id)
       safe_query <<-SQL
         SELECT ACADCAREER_CODE as career_code,
           TERM_ID as term_id,
@@ -817,7 +817,8 @@ module EdoOracle
         FROM  SISEDO.CLC_TERMV00_VW
         WHERE INSTITUTION = '#{UC_BERKELEY}' AND
           ACADCAREER_CODE = 'UGRD' AND
-          TERM_TYPE IS NOT NULL
+          TERM_TYPE IS NOT NULL AND
+          TERM_ID >= '#{oldest_term_id}'
         ORDER BY TERM_ID DESC
       SQL
     end
