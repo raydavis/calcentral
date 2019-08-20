@@ -460,6 +460,7 @@ module CanvasCsv
 
     def refresh_sections_cache(canvas_course_id)
       Canvas::CourseSections.new(:course_id => canvas_course_id).sections_list(true)
+      expire_instructor_sites_cache
     end
 
     class IdNotUniqueException < Exception
