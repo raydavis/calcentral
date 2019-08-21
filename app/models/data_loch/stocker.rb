@@ -48,16 +48,6 @@ module DataLoch
       logger.info "Advisor snapshots complete."
     end
 
-    def upload_l_and_s_students(s3_targets)
-      logger.warn "Starting L&S students snapshot, targets #{s3_targets}."
-      s3s = s3_from_names s3_targets
-      l_and_s_path = DataLoch::Zipper.zip_query "l_and_s_students" do
-        EdoOracle::Bulk.get_l_and_s_students
-      end
-      s3s.each {|s3| s3.upload("l_and_s", l_and_s_path) }
-      logger.info "L&S snapshot complete at #{l_and_s_path}."
-    end
-
     def upload_undergrads(s3_targets)
       logger.warn "Starting active undergrads snapshot, targets #{s3_targets}."
       s3s = s3_from_names s3_targets
@@ -91,6 +81,18 @@ module DataLoch
         clean_tmp_files([courses_path, enrollments_path])
         logger.info "Snapshots complete for term #{term_id}."
       end
+    end
+
+    def upload_term_definitions(s3_targets)
+      Rails.logger.warn "Starting term definition snapshots for targets #{s3_targets}."
+      oldest_term_id = Berkeley::TermCodes.slug_to_edo_id(Settings.terms.oldest)
+      s3s = s3_from_names s3_targets
+      output_path = DataLoch::Zipper.zip_query "term_definitions" do
+        EdoOracle::Queries.get_undergrad_terms(oldest_term_id, do_not_stringify: true)
+      end
+      s3s.each {|s3| s3.upload('term_definitions', output_path) }
+      clean_tmp_files([output_path])
+      logger.info "Term definitions snapshot complete at #{output_path}."
     end
 
     def upload_term_gpas(term_id, s3_targets)

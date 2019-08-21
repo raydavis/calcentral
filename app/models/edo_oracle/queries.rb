@@ -798,8 +798,8 @@ module EdoOracle
       SQL
     end
 
-    def self.get_undergrad_terms(oldest_term_id)
-      safe_query <<-SQL
+    def self.get_undergrad_terms(oldest_term_id, opts={})
+      sql = <<-SQL
         SELECT ACADCAREER_CODE as career_code,
           TERM_ID as term_id,
           TERM_TYPE as term_type,
@@ -821,6 +821,7 @@ module EdoOracle
           TERM_ID >= '#{oldest_term_id}'
         ORDER BY TERM_ID DESC
       SQL
+      safe_query(sql, opts)
     end
 
     def self.search_students(search_string)
