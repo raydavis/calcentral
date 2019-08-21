@@ -71,7 +71,7 @@ gem 'jruby-openssl', '0.9.19'
 gem 'addressable', '~> 2.3.4'
 
 # for parsing formatted html
-gem 'nokogiri', '~> 1.8.1', :platforms => :jruby
+gem 'nokogiri', '~> 1.10.4', :platforms => :jruby
 
 # for parsing paged feeds
 gem 'link_header', '~> 0.0.7'
