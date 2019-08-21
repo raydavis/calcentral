@@ -46,9 +46,9 @@ namespace :data_loch do
     DataLoch::Stocker.new().upload_term_gpas(term_id, s3_targets)
   end
 
-  desc 'Upload College of Letters & Science student info to data loch S3'
-  task :l_and_s => :environment do
-    DataLoch::Stocker.new().upload_l_and_s_students(s3_targets)
+  desc 'Upload Term Definitions to data loch S3'
+  task :term_definitions => :environment do
+    DataLoch::Stocker.new().upload_term_definitions(s3_targets)
   end
 
   desc 'Upload list of undergraduate students to data loch S3'
