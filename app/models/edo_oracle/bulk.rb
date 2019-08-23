@@ -286,5 +286,21 @@ module EdoOracle
       safe_query(sql, do_not_stringify: true)
     end
 
+    def self.get_undergrad_term_definitions(oldest_term_id)
+      sql = <<-SQL
+        SELECT TERM_ID,
+          TERM_DESCR AS term_name,
+          TO_CHAR(TERM_BEGIN_DT, 'YYYY-MM-DD') AS term_begins,
+          TO_CHAR(TERM_END_DT, 'YYYY-MM-DD') AS term_ends
+        FROM SISEDO.CLC_TERMV00_VW
+        WHERE INSTITUTION = 'UCB01' AND
+          ACADCAREER_CODE = 'UGRD' AND
+          TERM_TYPE IS NOT NULL AND
+          TERM_ID >= '#{oldest_term_id}'
+        ORDER BY TERM_ID DESC
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
+
   end
 end

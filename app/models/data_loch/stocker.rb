@@ -88,7 +88,7 @@ module DataLoch
       oldest_term_id = Berkeley::TermCodes.slug_to_edo_id(Settings.terms.oldest)
       s3s = s3_from_names s3_targets
       output_path = DataLoch::Zipper.zip_query "term_definitions" do
-        EdoOracle::Queries.get_undergrad_terms(oldest_term_id, do_not_stringify: true)
+        EdoOracle::Bulk.get_undergrad_term_definitions(oldest_term_id)
       end
       s3s.each {|s3| s3.upload('term_definitions', output_path) }
       clean_tmp_files([output_path])
