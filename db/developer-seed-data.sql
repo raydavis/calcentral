@@ -258,7 +258,7 @@ INSERT INTO oec_course_codes VALUES (7, 'ALTAIC', '', 'HGEAL', true, '2015-08-13
 INSERT INTO oec_course_codes VALUES (8, 'AMERSTD', '', 'QHUIS', true, '2015-08-13 23:26:35.433', '2015-08-13 23:26:35.433');
 INSERT INTO oec_course_codes VALUES (9, 'ANTHRO', '', 'SZANT', true, '2015-08-13 23:26:35.444', '2015-08-13 23:26:35.444');
 INSERT INTO oec_course_codes VALUES (10, 'ARABIC', '', 'HNNES', false, '2015-08-13 23:26:35.452', '2015-08-13 23:26:35.452');
-INSERT INTO oec_course_codes VALUES (11, 'ARCH', '', 'DBARC', false, '2015-08-13 23:26:35.461', '2015-08-13 23:26:35.461');
+INSERT INTO oec_course_codes VALUES (11, 'ARCH', '', 'DBARC', true, '2015-08-13 23:26:35.461', '2015-08-13 23:26:35.461');
 INSERT INTO oec_course_codes VALUES (12, 'ART', '', 'LQAPR', false, '2015-08-13 23:26:35.471', '2015-08-13 23:26:35.471');
 INSERT INTO oec_course_codes VALUES (13, 'ARMENI', '', 'LTSLL', true, '2015-08-13 23:26:35.482', '2015-08-13 23:26:35.482');
 INSERT INTO oec_course_codes VALUES (14, 'ASAMST', '', 'SBETH', true, '2015-08-13 23:26:35.49', '2015-08-13 23:26:35.49');
@@ -313,7 +313,7 @@ INSERT INTO oec_course_codes VALUES (62, 'EL ENG', '', 'EHEEC', true, '2015-08-1
 INSERT INTO oec_course_codes VALUES (63, 'ENE,RES', '', 'MGERG', true, '2015-08-13 23:26:35.934', '2015-08-13 23:26:35.934');
 INSERT INTO oec_course_codes VALUES (64, 'ENGIN', '', 'EDDNO', true, '2015-08-13 23:26:35.944', '2015-08-13 23:26:35.944');
 INSERT INTO oec_course_codes VALUES (65, 'ENGLISH', '', 'HENGL', false, '2015-08-13 23:26:35.949', '2015-08-13 23:26:35.949');
-INSERT INTO oec_course_codes VALUES (66, 'ENV DES', '', 'DACED', false, '2015-08-13 23:26:35.954', '2015-08-13 23:26:35.954');
+INSERT INTO oec_course_codes VALUES (66, 'ENV DES', '', 'DBARC', true, '2015-08-13 23:26:35.954', '2015-08-13 23:26:35.954');
 INSERT INTO oec_course_codes VALUES (67, 'ENV SCI', '', 'MCESP', true, '2015-08-13 23:26:35.96', '2015-08-13 23:26:35.96');
 INSERT INTO oec_course_codes VALUES (68, 'ENVECON', '', 'MBARC', true, '2015-08-13 23:26:35.965', '2015-08-13 23:26:35.965');
 INSERT INTO oec_course_codes VALUES (69, 'EPS', '', 'PGEGE', true, '2015-08-13 23:26:35.97', '2015-08-13 23:26:35.97');
@@ -433,7 +433,7 @@ INSERT INTO oec_course_codes VALUES (182, 'UGBA', '', 'BAHSB', false, '2015-08-1
 INSERT INTO oec_course_codes VALUES (183, 'UGIS', '', 'QHUIS', true, '2015-08-13 23:26:36.482', '2015-08-13 23:26:36.482');
 INSERT INTO oec_course_codes VALUES (184, 'VIETNMS', '', 'HVSSA', false, '2015-08-13 23:26:36.486', '2015-08-13 23:26:36.486');
 INSERT INTO oec_course_codes VALUES (185, 'VIS SCI', '', 'BOOPT', false, '2015-08-13 23:26:36.49', '2015-08-13 23:26:36.49');
-INSERT INTO oec_course_codes VALUES (186, 'VIS STD', '', 'DBARC', false, '2015-08-13 23:26:36.494', '2015-08-13 23:26:36.494');
+INSERT INTO oec_course_codes VALUES (186, 'VIS STD', '', 'DBARC', true, '2015-08-13 23:26:36.494', '2015-08-13 23:26:36.494');
 INSERT INTO oec_course_codes VALUES (187, 'XMBA', '', 'BAHSB', false, '2015-08-13 23:26:36.498', '2015-08-13 23:26:36.498');
 INSERT INTO oec_course_codes VALUES (188, 'YIDDISH', '', 'HZGER', true, '2015-08-13 23:26:36.502', '2015-08-13 23:26:36.502');
 INSERT INTO oec_course_codes VALUES (189, 'FSSEM', '', 'FSSEM', true, '2017-05-19 17:40:36.502', '2017-05-19 17:40:36.502');
