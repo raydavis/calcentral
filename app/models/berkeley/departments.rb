@@ -74,6 +74,8 @@ module Berkeley
         'ISF' => 'Interdisciplinary Studies Field',
         'JYHST' =>  'Center for Science, Technology, Medicine and Society',
         'KDCJS' =>  'Center for Jewish Studies',
+        # Not an official department code. Legal Studies is part of L&S but taught by Law staff.
+        'LEGALST' => 'Legal Studies',
         'LPSPP' =>  'Department of Spanish and Portuguese',
         'LQAPR' =>  'Department of Art Practice',
         'LSCLA' =>  'Department of Classics',
