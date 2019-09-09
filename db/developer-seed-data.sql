@@ -361,7 +361,7 @@ INSERT INTO oec_course_codes VALUES (110, 'LATAMST', '', 'QIIAS', true, '2015-08
 INSERT INTO oec_course_codes VALUES (111, 'LATIN', '', 'LSCLA', false, '2015-08-13 23:26:36.174', '2015-08-13 23:26:36.174');
 INSERT INTO oec_course_codes VALUES (112, 'LAW', '', 'CLLAW', false, '2015-08-13 23:26:36.178', '2015-08-13 23:26:36.178');
 INSERT INTO oec_course_codes VALUES (113, 'LD ARCH', '', 'DFLAE', false, '2015-08-13 23:26:36.183', '2015-08-13 23:26:36.183');
-INSERT INTO oec_course_codes VALUES (114, 'LEGALST', '', 'CLLAW', false, '2015-08-13 23:26:36.187', '2015-08-13 23:26:36.187');
+INSERT INTO oec_course_codes VALUES (114, 'LEGALST', '', 'LEGALST', true, '2015-08-13 23:26:36.187', '2015-08-13 23:26:36.187');
 INSERT INTO oec_course_codes VALUES (115, 'LGBT', '', 'SWOME', true, '2015-08-13 23:26:36.192', '2015-08-13 23:26:36.192');
 INSERT INTO oec_course_codes VALUES (116, 'LINGUIS', '', 'SLING', true, '2015-08-13 23:26:36.199', '2015-08-13 23:26:36.199');
 INSERT INTO oec_course_codes VALUES (117, 'M E STU', '', 'QIIAS', true, '2015-08-13 23:26:36.203', '2015-08-13 23:26:36.203');
