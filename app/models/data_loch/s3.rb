@@ -4,13 +4,8 @@ module DataLoch
 
     def initialize(target=nil)
       settings = Settings.data_loch
-      if target
-        s3_config = settings.targets.find {|c| c.name == target}
-        raise ArgumentError, "Could not find data_loch target #{target}" unless s3_config
-      else
-        # TODO Remove support for old one-S3-target-only configurations in next release.
-        s3_config = settings
-      end
+      s3_config = settings.targets.find {|c| c.name == target}
+      raise ArgumentError, "Could not find data_loch target #{target}" unless s3_config
       @bucket = s3_config.bucket
       @prefix = s3_config.prefix
       @resource = Aws::S3::Resource.new(

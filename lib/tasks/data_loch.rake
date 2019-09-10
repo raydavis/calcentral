@@ -3,8 +3,8 @@ namespace :data_loch do
   def s3_targets
     targets = ENV['TARGETS']
     if targets.blank?
-      Rails.logger.warn 'Should specify TARGETS as names of S3 configurations. Separate multiple target names with commas.'
-      targets = nil
+      Rails.logger.warn 'No TARGETS environment variable found - exiting.'
+      abort 'Specify TARGETS as comma-separated names of S3 configurations.'
     else
       targets = targets.split(',')
     end
