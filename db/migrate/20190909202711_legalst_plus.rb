@@ -17,6 +17,12 @@ class LegalstPlus < ActiveRecord::Migration
           include_in_oec = TRUE
           WHERE dept_code = 'DBARC'
       SQL
+      update <<-SQL
+        UPDATE oec_course_codes SET
+          dept_code = 'AMERSTD',
+          include_in_oec = FALSE
+          WHERE dept_name = 'AMERSTD'
+      SQL
       Oec::CourseCode.create(
         dept_code: 'UGIS',
         catalog_id: '189',

@@ -255,7 +255,7 @@ INSERT INTO oec_course_codes VALUES (4, 'AFRKANS', '', 'HZGER', true, '2015-08-1
 INSERT INTO oec_course_codes VALUES (5, 'AGR CHM', '', 'MEPMB', true, '2015-08-13 23:26:35.408', '2015-08-13 23:26:35.408');
 INSERT INTO oec_course_codes VALUES (6, 'AHMA', '', 'HTAHN', false, '2015-08-13 23:26:35.417', '2015-08-13 23:26:35.417');
 INSERT INTO oec_course_codes VALUES (7, 'ALTAIC', '', 'HGEAL', true, '2015-08-13 23:26:35.426', '2015-08-13 23:26:35.426');
-INSERT INTO oec_course_codes VALUES (8, 'AMERSTD', '', 'QHUIS', true, '2015-08-13 23:26:35.433', '2015-08-13 23:26:35.433');
+INSERT INTO oec_course_codes VALUES (8, 'AMERSTD', '', 'AMERSTD', false, '2015-08-13 23:26:35.433', '2015-08-13 23:26:35.433');
 INSERT INTO oec_course_codes VALUES (9, 'ANTHRO', '', 'SZANT', true, '2015-08-13 23:26:35.444', '2015-08-13 23:26:35.444');
 INSERT INTO oec_course_codes VALUES (10, 'ARABIC', '', 'HNNES', false, '2015-08-13 23:26:35.452', '2015-08-13 23:26:35.452');
 INSERT INTO oec_course_codes VALUES (11, 'ARCH', '', 'DBARC', true, '2015-08-13 23:26:35.461', '2015-08-13 23:26:35.461');
