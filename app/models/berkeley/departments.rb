@@ -14,6 +14,8 @@ module Berkeley
     #L4 codes from http://www.bai.berkeley.edu/BFS/BudgetGL/treeReports/UCBDTREE.HTM
     def self.department_map
       @department_map ||= {
+        # Officially part of UGIS (Undergraduate and Interdisciplinary Studies).
+        'AMERSTD' => 'American Studies',
         'BAHSB' =>  'Haas School of Business',
         'BMCCB' =>  'Center for Computational Biology',
         'BTCNM' =>  'Center for New Media',
