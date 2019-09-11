@@ -26,4 +26,4 @@ echo "`date`: About to run the mailing list population update script..." | $LOGI
 
 cd deploy
 
-bundle exec rake mailing_lists:populate | $LOGIT
+bundle exec rake mailing_lists:populate |& $LOGIT

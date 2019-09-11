@@ -33,7 +33,7 @@ then
   echo "[$(date +"%F %H:%M:%S")] [INFO] Begin oec:${TASK} on $(hostname -s)" | ${LOGIT}
 
   cd deploy
-  bundle exec rake oec:${TASK} | ${LOGIT}
+  bundle exec rake oec:${TASK} |& ${LOGIT}
 
   echo "[$(date +"%F %H:%M:%S")] [INFO] Finished oec:${TASK} on $(hostname -s)" | ${LOGIT}
 

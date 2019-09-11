@@ -25,4 +25,4 @@ echo "`date`: About to run the guest user sync script..." | $LOGIT
 
 cd deploy
 
-bundle exec rake canvas:guest_user_sync | $LOGIT
+bundle exec rake canvas:guest_user_sync |& $LOGIT

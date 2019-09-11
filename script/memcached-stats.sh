@@ -25,4 +25,4 @@ echo "------------------------------------------" | $LOGIT
 
 cd deploy
 
-bundle exec rake memcached:get_stats | $LOGIT
+bundle exec rake memcached:get_stats |& $LOGIT
