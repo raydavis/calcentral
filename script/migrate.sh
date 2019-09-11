@@ -42,6 +42,6 @@ echo "$(date): rake db:migrate VERSION=${VERSION} RAILS_ENV=${RAILS_ENV} ..." | 
 
 cd deploy
 
-bundle exec rake db:migrate VERSION=${VERSION} RAILS_ENV=${RAILS_ENV} | ${LOGIT}
+bundle exec rake db:migrate VERSION=${VERSION} RAILS_ENV=${RAILS_ENV} |& ${LOGIT}
 
 exit 0

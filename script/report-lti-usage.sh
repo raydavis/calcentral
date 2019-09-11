@@ -25,4 +25,4 @@ echo "`date`: About to run the LTI usage reporting script..." | $LOGIT
 
 cd deploy
 
-bundle exec rake canvas:report_lti_usage | $LOGIT
+bundle exec rake canvas:report_lti_usage |& $LOGIT

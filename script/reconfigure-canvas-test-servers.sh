@@ -27,10 +27,10 @@ echo | $LOGIT
 echo "------------------------------------------" | $LOGIT
 echo "`date`: About to run the CAS Authentication reconfiguration script..." | $LOGIT
 
-bundle exec rake canvas:reconfigure_auth_url | $LOGIT
+bundle exec rake canvas:reconfigure_auth_url |& $LOGIT
 
 echo | $LOGIT
 echo "------------------------------------------" | $LOGIT
 echo "`date`: About to run the Test Admin reconfiguration script..." | $LOGIT
 
-bundle exec rake canvas:add_test_admin | $LOGIT
+bundle exec rake canvas:add_test_admin |& $LOGIT

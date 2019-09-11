@@ -28,28 +28,28 @@ echo "------------------------------------------" | $LOGIT
 echo "`date`: About to clear cache and cache statisics..." | $LOGIT
 
 cd ~/calcentral/deploy
-bundle exec rake memcached:clear | $LOGIT
+bundle exec rake memcached:clear |& $LOGIT
 
 echo | $LOGIT
 echo "------------------------------------------" | $LOGIT
 echo "`date`: About to start empty-cache load test on $LOAD_TEST_AGENT ..." | $LOGIT
 
-ssh $LOAD_TEST_AGENT "cd tsung && ./automated_tsung.sh calcentral-dev" | $LOGIT
+ssh $LOAD_TEST_AGENT "cd tsung && ./automated_tsung.sh calcentral-dev" |& $LOGIT
 
 echo | $LOGIT
 echo "------------------------------------------" | $LOGIT
 echo "`date`: About to get cache statistics for empty-cache load test..." | $LOGIT
 
-bundle exec rake memcached:get_stats | $LOGIT
+bundle exec rake memcached:get_stats |& $LOGIT
 
 echo | $LOGIT
 echo "------------------------------------------" | $LOGIT
 echo "`date`: About to start primed-cache load test on $LOAD_TEST_AGENT ..." | $LOGIT
 
-ssh $LOAD_TEST_AGENT "cd tsung && ./automated_tsung.sh calcentral-dev-cached" | $LOGIT
+ssh $LOAD_TEST_AGENT "cd tsung && ./automated_tsung.sh calcentral-dev-cached" |& $LOGIT
 
 echo | $LOGIT
 echo "------------------------------------------" | $LOGIT
 echo "`date`: About to get cache statistics for primed-cache load test..." | $LOGIT
 
-bundle exec rake memcached:get_stats | $LOGIT
+bundle exec rake memcached:get_stats |& $LOGIT

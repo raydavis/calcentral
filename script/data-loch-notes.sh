@@ -25,4 +25,4 @@ echo "`date`: About to run the Data Loch Advising Notes script..." | $LOGIT
 
 cd deploy
 
-bundle exec rake data_loch:notes | $LOGIT
+bundle exec rake data_loch:notes |& $LOGIT

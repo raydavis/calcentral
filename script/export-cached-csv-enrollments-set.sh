@@ -25,4 +25,4 @@ echo "`date`: About to run the Canvas cached enrollments CSV export script..." |
 
 cd deploy
 
-bundle exec rake canvas:export_enrollments_to_csv_set | $LOGIT
+bundle exec rake canvas:export_enrollments_to_csv_set |& $LOGIT

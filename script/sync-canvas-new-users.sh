@@ -29,4 +29,4 @@ echo "$(date): About to run the new campus user sync script..." | ${LOGIT}
 
 cd deploy
 
-bundle exec rake canvas:new_user_sync | ${LOGIT}
+bundle exec rake canvas:new_user_sync |& ${LOGIT}

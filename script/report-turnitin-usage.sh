@@ -25,4 +25,4 @@ echo "`date`: About to run the TurnItIn usage reporting script..." | $LOGIT
 
 cd deploy
 
-bundle exec rake canvas:report_turnitin | $LOGIT
+bundle exec rake canvas:report_turnitin |& $LOGIT
