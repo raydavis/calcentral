@@ -1,6 +1,10 @@
 module DataLoch
   class S3
-    include ClassLogger
+    include ActiveAttrModel, ClassLogger
+
+    attr_reader :bucket
+    attr_reader :prefix
+    attr_reader :resource
 
     def initialize(target=nil)
       settings = Settings.data_loch
@@ -12,6 +16,11 @@ module DataLoch
         credentials: Aws::Credentials.new(s3_config.aws_key, s3_config.aws_secret),
         region: s3_config.aws_region
       )
+    end
+
+    def all_subpaths(subfolder)
+      full_path = "#{@prefix}/#{subfolder}"
+      @resource.bucket(@bucket).objects({prefix: full_path}).collect(&:key)
     end
 
     def upload(subfolder, local_path)
