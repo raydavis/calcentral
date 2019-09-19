@@ -348,10 +348,9 @@ describe Berkeley::Terms do
   context 'Hub Term API feature flag disabled' do
     before { allow(Settings.features).to receive(:hub_term_api).and_return false }
     let(:fake_now) {DateTime.parse('2016-06-16')}
-    it 'uses only the legacy DB, even for non-legacy semesters' do
+    it 'uses only the DB' do
       expect(HubTerm::Proxy).to receive(:new).never
       expect(subject.next.legacy?).to be_falsey
-      expect(subject.future).to be_nil
     end
   end
 

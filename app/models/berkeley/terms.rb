@@ -193,7 +193,7 @@ module Berkeley
     def merge_terms_from_legacy_db(terms)
       CampusOracle::Queries.terms.each do |db_term|
         term = Term.new(db_term)
-        if term.legacy? || @hub_api_disabled
+        if term.legacy?
           @sis_current_term ||= term if term.legacy_sis_term_status == 'CT'
           terms << term
         end
