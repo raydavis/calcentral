@@ -3,16 +3,7 @@ module DataLoch
     include ClassLogger
 
     def s3_from_names(targets)
-      s3s = []
-      if targets.blank?
-        logger.warn 'Should specify names of S3 configurations. Defaulting to deprecated single-target configuration.'
-        s3s << DataLoch::S3.new
-      else
-        targets.each do |target|
-          s3s << DataLoch::S3.new(target)
-        end
-      end
-      s3s
+      return targets.map {|target| DataLoch::S3.new(target)}
     end
 
     def get_daily_path()

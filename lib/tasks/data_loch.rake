@@ -3,8 +3,8 @@ namespace :data_loch do
   def s3_targets
     targets = ENV['TARGETS']
     if targets.blank?
-      Rails.logger.warn 'Should specify TARGETS as names of S3 configurations. Separate multiple target names with commas.'
-      targets = nil
+      Rails.logger.warn 'No TARGETS environment variable found - exiting.'
+      abort 'Specify TARGETS as comma-separated names of S3 configurations.'
     else
       targets = targets.split(',')
     end
@@ -18,6 +18,7 @@ namespace :data_loch do
 
   desc 'Upload course, enrollment, and advisee data snapshots to data loch S3 (TERM_ID = 2XXX,2XXX...)'
   task :snapshot => :environment do
+    targets = s3_targets
     term_ids = ENV['TERM_ID']
     advisee_data = []
     advisee_data.concat ['demographics'] if ENV['DEMOGRAPHICS']
@@ -26,17 +27,17 @@ namespace :data_loch do
     if term_ids.blank? && advisee_data.blank?
       Rails.logger.error 'Neither TERM_ID, DEMOGRAPHICS, nor APPLICANT is specified. Nothing to upload.'
     end
-    if term_ids.present?
+
+    if term_ids == 'auto'
+      DataLoch::Manager.new().manage_terms_data targets
+    elsif term_ids.present?
       term_ids = term_ids.split(',')
+      is_historical = ENV['HISTORICAL']
+      DataLoch::Stocker.new().upload_term_data(term_ids, targets, is_historical)
     end
-    targets = s3_targets
-    is_historical = ENV['HISTORICAL']
-    stocker = DataLoch::Stocker.new()
-    if term_ids.present?
-      stocker.upload_term_data(term_ids, targets, is_historical)
-    end
+
     if advisee_data.present?
-      stocker.upload_advisee_data(targets, advisee_data)
+      DataLoch::Stocker.new().upload_advisee_data(targets, advisee_data)
     end
   end
 
