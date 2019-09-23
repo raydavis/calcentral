@@ -47,11 +47,11 @@ describe DataLoch::Manager do
         expect(mock_s3).to receive(:move).with(
           'sis-data/daily/6aeb9b3242ce1f3f51bd6df21e173993-2019-09-16/courses/courses-2185.gz',
           'historical/courses/courses-2185.gz'
-        )
+        ).and_return 'sis-data/historical/courses/courses-2185.gz'
         expect(mock_s3).to receive(:move).with(
           'sis-data/daily/6aeb9b3242ce1f3f51bd6df21e173993-2019-09-16/enrollments/enrollments-2185.gz',
           'historical/enrollments/enrollments-2185.gz'
-        )
+        ).and_return 'sis-data/historical/enrollments/enrollments-2185.gz'
         expect(mock_stocker).to receive(:upload_term_data).with(['2188', '2192'], [target])
         subject.manage_terms_data([target])
       end

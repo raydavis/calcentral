@@ -31,7 +31,10 @@ module DataLoch
         path_end = /\/daily\/[^\/]+\/(.+)/.match(from_path)[1]
         to_path = "historical/#{path_end}"
         logger.warn "In S3 target #{s3_target}, moving #{from_path} to #{to_path}"
-        s3.move(from_path, to_path)
+        full_to_path = s3.move(from_path, to_path)
+        if full_to_path.blank?
+          raise RuntimeError, 'S3 move failed; quitting job'
+        end
       end
     end
 
