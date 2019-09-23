@@ -178,7 +178,9 @@ module DataLoch
         s3 = s3_from_names([target]).first
         s3.load_advisee_sids()
         logger.info "Testing upload access to #{target}"
-        s3.upload('tmp', test_file)
+        full_path = s3.upload('tmp', test_file)
+        logger.info "Testing move access from #{full_path} to 'tmp/mved/ping.tmp'"
+        s3.move(full_path, 'tmp/mved/ping.tmp')
       end
       logger.info "Access checked for AWS targets #{s3_targets}"
       clean_tmp_files [test_file]
