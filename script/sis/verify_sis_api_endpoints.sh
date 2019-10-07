@@ -304,8 +304,8 @@ if [ "${APP_MODE}" == "calcentral" ] ; then
 fi
 
 verify_hub 'always_enabled' true \
-  "/${CAMPUS_SOLUTIONS_ID}/affiliation" \
-  "/${CAMPUS_SOLUTIONS_ID}/contacts"
+  "/${CAMPUS_SOLUTIONS_ID}?affiliation-status=ALL" \
+  "/${CAMPUS_SOLUTIONS_ID}?inc-cntc=true"
 
 if [ "${APP_MODE}" == "calcentral" ] ; then
 verify_hub 'profile' true \
