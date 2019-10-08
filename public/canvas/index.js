@@ -24,6 +24,10 @@
     $('head').append(css);
   };
 
-  document.addEventListener('load', loadCanvasCustomization);
+  if (document.readyState === 'complete' || (document.readyState !== 'loading' && !document.documentElement.doScroll)) {
+    loadCanvasCustomization();
+  } else {
+    document.addEventListener('DOMContentLoaded', loadCanvasCustomization);
+  }
 
 })(window, window.$);
