@@ -12,7 +12,21 @@ module EdoOracle
     def self.query(sql, opts={})
       result = []
       use_pooled_connection do
+        if Rails.logger.debug?
+          Rails.logger.debug("#{self.name} working with connection #{connection}, object_id #{connection.object_id}, from pool #{connection.pool}")
+          pool_connections = connection.pool.connections
+          Rails.logger.debug("Current pool size #{pool_connections.size}")
+          pool_desc = pool_connections.map {|c| {id: c.object_id, owner: c.owner, busy: (c.in_use? && c.owner.alive?),
+                                                 dead: (c.in_use? && !c.owner.alive?), idle: !c.in_use?}}
+          Rails.logger.debug("Connections = #{pool_desc}")
+        end
+
         result = connection.select_all sql
+
+        if Rails.logger.debug?
+          Rails.logger.debug "#{self.name} leaving connection_pool.with_connection"
+        end
+        result
       end
       opts[:do_not_stringify] ? result : stringify_ints!(result)
     end
@@ -20,6 +34,7 @@ module EdoOracle
     def self.safe_query(sql, opts={})
       query(sql, opts)
     rescue => e
+      # TODO Need to return pooled connection?
       logger.error "Query failed: #{e.class}: #{e.message}\n #{e.backtrace.join("\n ")}"
       []
     end
@@ -27,6 +42,7 @@ module EdoOracle
     def self.fallible_query(sql, opts={})
       query(sql, opts)
     rescue => e
+      # TODO Need to return pooled connection?
       logger.fatal "Query failed: #{e.class}: #{e.message}\n #{e.backtrace.join("\n ")}"
       raise RuntimeError, "Fatal database failure"
     end
