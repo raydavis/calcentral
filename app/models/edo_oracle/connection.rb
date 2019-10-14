@@ -16,8 +16,12 @@ module EdoOracle
           Rails.logger.debug("#{self.name} working with connection #{connection}, object_id #{connection.object_id}, from pool #{connection.pool}")
           pool_connections = connection.pool.connections
           Rails.logger.debug("Current pool size #{pool_connections.size}")
-          pool_desc = pool_connections.map {|c| {id: c.object_id, owner: c.owner, busy: (c.in_use? && c.owner.alive?),
-                                                 dead: (c.in_use? && !c.owner.alive?), idle: !c.in_use?}}
+          pool_desc = pool_connections.map {|c| {
+            id: c.object_id,
+            owner: (c.owner && c.owner.to_s),
+            conn_in_use: !!c.in_use?,
+            thread_status: (c.owner && c.owner.status)
+          }}
           Rails.logger.debug("Connections = #{pool_desc}")
         end
 
