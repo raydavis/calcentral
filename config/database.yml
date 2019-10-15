@@ -50,6 +50,7 @@ edodb:
   password: <%=Settings.edodb.password %>
   pool: <%=Settings.edodb.pool %>
   timeout: <%=Settings.edodb.timeout %>
+  reaping_frequency: <%=Settings.edodb.reaping_frequency %>
 
 edw_db:
   adapter: <%= Settings.edw_db.adapter %>
