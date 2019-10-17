@@ -56,7 +56,7 @@ module BackgroundThread
           message_lines << ex.backtrace.join("\n ") unless Rails.env == "test"
           logger.error message_lines.join("\n")
         ensure
-          if Setting.edodb.disconnection_method == 'bg'
+          if Settings.edodb.disconnection_method == 'bg'
             EdoOracle::Connection.clear_active_connections!
           end
         end
