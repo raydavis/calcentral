@@ -10,35 +10,47 @@ module EdoOracle
     end
 
     def self.query(sql, opts={})
-      result = []
-      use_pooled_connection do
-        if Rails.logger.debug?
-          Rails.logger.debug("#{self.name} working with connection #{connection}, object_id #{connection.object_id}, from pool #{connection.pool}")
-          pool_connections = connection.pool.connections
-          Rails.logger.debug("Current pool size #{pool_connections.size}")
-          pool_desc = pool_connections.map {|c| {
-            id: c.object_id,
-            owner: (c.owner && c.owner.to_s),
-            conn_in_use: !!c.in_use?,
-            thread_status: (c.owner && c.owner.status)
-          }}
-          Rails.logger.debug("Connections = #{pool_desc}")
+      if settings.disconnection_method == 'query'
+        result = with_released_connection do
+          inner_query(sql)
         end
-
-        result = connection.select_all sql
-
-        if Rails.logger.debug?
-          Rails.logger.debug "#{self.name} leaving connection_pool.with_connection"
+      else
+        result = use_pooled_connection do
+          Rails.logger.debug("#{self.name} working with connection #{connection}, object_id #{connection.object_id}, from pool #{connection_pool}")
+          inner_query(sql)
         end
-        result
       end
       opts[:do_not_stringify] ? result : stringify_ints!(result)
+    end
+
+    def self.inner_query(sql)
+      if Rails.logger.debug?
+        pool_connections = connection_pool.connections
+        Rails.logger.debug("Current pool size #{pool_connections.size}")
+        pool_desc = pool_connections.map {|c| {
+          id: c.object_id,
+          owner: (c.owner && c.owner.to_s),
+          conn_in_use: !!c.in_use?,
+          thread_status: (c.owner && c.owner.status)
+        }}
+        Rails.logger.debug("Connections = #{pool_desc}")
+      end
+      connection.select_all sql
+    end
+
+    def self.with_released_connection(&block)
+      connection_id = connection && connection.object_id
+      if Rails.logger.debug?
+        Rails.logger.debug "#{self.name} using connection #{connection_id}"
+      end
+      yield block
+    ensure
+      connection_pool.release_connection(connection_id) if connection_id
     end
 
     def self.safe_query(sql, opts={})
       query(sql, opts)
     rescue => e
-      # TODO Need to return pooled connection?
       logger.error "Query failed: #{e.class}: #{e.message}\n #{e.backtrace.join("\n ")}"
       []
     end
@@ -46,7 +58,6 @@ module EdoOracle
     def self.fallible_query(sql, opts={})
       query(sql, opts)
     rescue => e
-      # TODO Need to return pooled connection?
       logger.fatal "Query failed: #{e.class}: #{e.message}\n #{e.backtrace.join("\n ")}"
       raise RuntimeError, "Fatal database failure"
     end
