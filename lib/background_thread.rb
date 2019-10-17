@@ -47,7 +47,6 @@ module BackgroundThread
     def self.bg_run
       logger.debug "About to add task: #{describe}"
       is_queued = get_pool.post do
-        result = error_message = nil
         begin
           result = yield
           logger.debug "Background task returned '#{result}'"
@@ -56,6 +55,10 @@ module BackgroundThread
           message_lines = [error_message]
           message_lines << ex.backtrace.join("\n ") unless Rails.env == "test"
           logger.error message_lines.join("\n")
+        ensure
+          if Setting.edodb.disconnection_method == 'bg'
+            EdoOracle::Connection.clear_active_connections!
+          end
         end
       end
       logger.warn "Task was not successfully queued to pool" if !is_queued

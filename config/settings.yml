@@ -51,9 +51,9 @@ edodb:
   username: sa
   password: sa
   pool: 95
-  # Frequency in seconds to periodically run the ActiveRecord Reaper.
-  # The default is nil, which means do not schedule any runs.
-  reaping_frequency: 600
+  # 'query' (per-query cleanup), 'bg' (per-background-job cleanup), or nil.
+  # TODO Remove experimental setting post-experimentation.
+  disconnection_method:
 
 campusdb:
   fake: false
