@@ -19,9 +19,10 @@
             Set up course sites to communicate with and manage the work of students enrolled in your classes.
           </p>
           <p class="bc-page-site-creation-feature-description" data-ng-if="!authorizations.canCreateCourseSite">
-            It appears that you do not have permissions to create a Course Site in the current or upcoming terms.
-            If you still wish to request a Course Site, please contact
-            <a href="http://www.ets.berkeley.edu/discover-services/bcourses">bCourses support</a>.
+            To create a course site, you will need to be the official instructor of record for a course.
+            If you have not been assigned as the official instructor of record for the course,
+            please contact your department scheduler.
+            You will be able to create a course site the day after you have been officially assigned to teach the course.
           </p>
           <div class="bc-page-site-creation-feature-button-wrapper">
             <a data-cc-disabled="!authorizations.canCreateCourseSite" data-ng-href="{{linkToCreateCourseSite}}"
