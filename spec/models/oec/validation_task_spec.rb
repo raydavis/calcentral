@@ -180,8 +180,14 @@ describe Oec::ValidationTask do
     context 'conflicting instructor data across cross-listings' do
       let(:invalid_row) { '2015-B-34821,2015-B-34821,LGBT C146A LEC 001 REP SEXUALITY/LIT,Y,GWS/LGBT C146A LEC 001,LGBT,C146A,LEC,001,P,155555,UID:155555,Zachary,Zzzz,zzzz@berkeley.edu,23,Y,LGBT,F,,01-26-2015,05-11-2015' }
       let(:key) { '2015-B-34821' }
-      let(:expected_message) { 'Instructor list (155555, 942792) differs from instructor list (942792) of cross-listed course 2015-B-32984' }
-      include_examples 'validation error logging'
+      it 'should pass with warning' do
+        merged_course_confirmations_csv.concat invalid_row
+        task.run
+        log_warnings = task.instance_variable_get(:@log)
+        msg = 'Instructor list (155555, 942792) differs from instructor list (942792) of cross-listed course 2015-B-32984'
+        expect(log_warnings.find {|m| m.include? msg}).to be_present
+        expect(task.errors).to be_blank
+      end
     end
 
     context 'DEPT_FORM specifies non-participating department' do

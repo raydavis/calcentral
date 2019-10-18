@@ -122,7 +122,7 @@ module Oec
           validate('courses', course_id) do |errors|
             instructor_ids = course_instructors.uids_for_course_id(course_id).sort
             if instructor_ids != expected_instructor_ids
-              errors.add "Instructor list (#{instructor_ids.join ', '}) differs from instructor list (#{expected_instructor_ids.join ', '}) of cross-listed course #{comparison_course_id}"
+              log :warn, "Instructor list (#{instructor_ids.join ', '}) differs from instructor list (#{expected_instructor_ids.join ', '}) of cross-listed course #{comparison_course_id}"
             end
           end
         end
