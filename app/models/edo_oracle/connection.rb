@@ -10,15 +10,9 @@ module EdoOracle
     end
 
     def self.query(sql, opts={})
-      if settings.disconnection_method == 'query'
-        result = with_released_connection do
-          inner_query(sql)
-        end
-      else
-        result = use_pooled_connection do
-          Rails.logger.debug("#{self.name} working with connection #{connection}, object_id #{connection.object_id}, from pool #{connection_pool}")
-          inner_query(sql)
-        end
+      result = use_pooled_connection do
+        Rails.logger.debug("#{self.name} working with connection #{connection}, object_id #{connection.object_id}, from pool #{connection_pool}")
+        inner_query(sql)
       end
       opts[:do_not_stringify] ? result : stringify_ints!(result)
     end
@@ -36,16 +30,6 @@ module EdoOracle
         Rails.logger.debug("Connections = #{pool_desc}")
       end
       connection.select_all sql
-    end
-
-    def self.with_released_connection(&block)
-      connection_id = connection && connection.object_id
-      if Rails.logger.debug?
-        Rails.logger.debug "#{self.name} using connection #{connection_id}"
-      end
-      yield block
-    ensure
-      connection_pool.release_connection(connection_id) if connection_id
     end
 
     def self.safe_query(sql, opts={})

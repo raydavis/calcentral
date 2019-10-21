@@ -51,9 +51,6 @@ edodb:
   username: sa
   password: sa
   pool: 95
-  # 'query' (per-query cleanup), 'bg' (per-background-job cleanup), or nil.
-  # TODO Remove experimental setting post-experimentation.
-  disconnection_method:
 
 campusdb:
   fake: false
