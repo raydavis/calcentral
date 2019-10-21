@@ -56,9 +56,8 @@ module BackgroundThread
           message_lines << ex.backtrace.join("\n ") unless Rails.env == "test"
           logger.error message_lines.join("\n")
         ensure
-          if Settings.edodb.disconnection_method == 'bg'
-            EdoOracle::Connection.clear_active_connections!
-          end
+          # Rails takes care of this for foregrounded request threads, but background jobs must fend for themselves.
+          EdoOracle::Connection.clear_active_connections!
         end
       end
       logger.warn "Task was not successfully queued to pool" if !is_queued
