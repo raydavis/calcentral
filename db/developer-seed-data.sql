@@ -281,7 +281,7 @@ INSERT INTO oec_course_codes VALUES (30, 'CELTIC', '', 'CELTIC', true, '2015-08-
 INSERT INTO oec_course_codes VALUES (31, 'CHEM', '', 'CCHEM', true, '2015-08-13 23:26:35.648', '2015-08-13 23:26:35.648');
 INSERT INTO oec_course_codes VALUES (32, 'CHICANO', '', 'SBETH', true, '2015-08-13 23:26:35.655', '2015-08-13 23:26:35.655');
 INSERT INTO oec_course_codes VALUES (33, 'CHINESE', '', 'HGEAL', true, '2015-08-13 23:26:35.664', '2015-08-13 23:26:35.664');
-INSERT INTO oec_course_codes VALUES (34, 'CHM ENG', '', 'CEEEG', false, '2015-08-13 23:26:35.671', '2015-08-13 23:26:35.671');
+INSERT INTO oec_course_codes VALUES (34, 'CHM ENG', '', 'CEEEG', true, '2015-08-13 23:26:35.671', '2015-08-13 23:26:35.671');
 INSERT INTO oec_course_codes VALUES (35, 'CIV ENG', '', 'EGCEE', true, '2015-08-13 23:26:35.684', '2015-08-13 23:26:35.684');
 INSERT INTO oec_course_codes VALUES (36, 'CLASSIC', '', 'LSCLA', false, '2015-08-13 23:26:35.695', '2015-08-13 23:26:35.695');
 INSERT INTO oec_course_codes VALUES (37, 'CMPBIO', '', 'BMCCB', true, '2015-08-13 23:26:35.704', '2015-08-13 23:26:35.704');
