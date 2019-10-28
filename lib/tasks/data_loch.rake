@@ -23,9 +23,10 @@ namespace :data_loch do
     advisee_data = []
     advisee_data.concat ['demographics'] if ENV['DEMOGRAPHICS']
     advisee_data.concat ['edw_demographics'] if ENV['EDW_DEMOGRAPHICS']
+    advisee_data.concat ['intended_majors'] if ENV['INTENDED_MAJORS']
     advisee_data.concat ['socio_econ', 'applicant_scores'] if ENV['APPLICANT']
     if term_ids.blank? && advisee_data.blank?
-      Rails.logger.error 'Neither TERM_ID, DEMOGRAPHICS, nor APPLICANT is specified. Nothing to upload.'
+      Rails.logger.error 'Neither TERM_ID nor any advisee field is specified. Nothing to upload.'
     end
 
     if term_ids == 'auto'

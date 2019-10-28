@@ -112,7 +112,7 @@ module EdoOracle
       # ACADPROG_DESCR, and so we filter them out.
       sql = <<-SQL
         SELECT DISTINCT
-          pl.STUDENT_ID as sid, 
+          pl.STUDENT_ID as sid,
           pl.ACADPROG_CODE, pl.ACADPROG_DESCR,
           pl.ACADPLAN_CODE, pl.ACADPLAN_DESCR, pl.ACADPLAN_TYPE_CODE, pl.ACADPLAN_OWNEDBY_CODE
         FROM SISEDO.student_planv01_vw pl
@@ -150,9 +150,20 @@ module EdoOracle
       safe_query(full_sql, do_not_stringify: true)
     end
 
+    def self.get_intended_majors()
+      sql = <<-SQL
+        SELECT
+          bimv.EMPLID AS sid,
+          bimv.ACAD_PLAN AS acadplan_code
+        FROM
+          SYSADM.BOA_INTENDED_MAJOR_VW bimv
+      SQL
+      safe_query(sql, do_not_stringify: true)
+    end
+
     def self.get_advising_notes()
       sql = <<-SQL
-        SELECT 
+        SELECT
           EMPLID,
           SAA_NOTE_ID,
           SAA_SEQ_NBR,
@@ -244,7 +255,7 @@ module EdoOracle
 
     def self.get_advisor_note_permissions()
       sql = <<-SQL
-        SELECT 
+        SELECT
           A.USER_ID,
           A.CS_ID,
           A.PERMISSION_LIST,
@@ -256,12 +267,12 @@ module EdoOracle
 
     def self.get_academic_plan_owners()
       sql = <<-SQL
-        SELECT DISTINCT 
+        SELECT DISTINCT
           ACADPLAN_CODE,
           ACADPLAN_DESCR,
           ACADPLAN_TYPE_CODE,
           ACADPLAN_TYPE_DESCR,
-          ACADPLAN_OWNEDBY_CODE, 
+          ACADPLAN_OWNEDBY_CODE,
           ACADPLAN_OWNEDBY_DESCR,
           ACADPLAN_OWNEDBY_PCT,
           ACADPROG_CODE,
