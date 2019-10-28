@@ -118,6 +118,10 @@ module DataLoch
             else
               job_paths[job] = DataLoch::Zipper.zip_query job do
                 case job
+                when 'intended_majors'
+                  # The EDO intended majors view is already narrowed down to active undergraduates and needs no additional
+                  # per-SID scoping.
+                  EdoOracle::Bulk.get_intended_majors
                 when 'edw_demographics'
                   EdwOracle::Queries.get_student_ethnicities sids
                 when 'socio_econ'
