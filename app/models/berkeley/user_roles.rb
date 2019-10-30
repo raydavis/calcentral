@@ -25,7 +25,7 @@ module Berkeley
     def roles_from_affiliations(affiliations)
       affiliations ||= []
       base_roles.merge({
-        :student => affiliations.index {|a| (a.start_with? 'STUDENT-TYPE-')}.present?,
+        :student => (affiliations & ['STUDENT-TYPE-REGISTERED', 'STUDENT-TYPE-NOT REGISTERED']).present?,
         :registered => affiliations.include?('STUDENT-TYPE-REGISTERED'),
         # TODO Remove '-STATUS-EXPIRED' logic once CalNet transition is complete.
         :exStudent => (affiliations & ['STUDENT-STATUS-EXPIRED', 'FORMER-STUDENT', 'AFFILIATE-TYPE-ADVCON-ALUMNUS']).present?,

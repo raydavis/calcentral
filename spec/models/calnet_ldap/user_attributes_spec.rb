@@ -13,7 +13,11 @@ describe CalnetLdap::UserAttributes do
         ou: ['people'],
         mail: ['oski@berkeley.edu'],
         berkeleyeduofficialemail: ['oski_bearable@berkeley.edu'],
-        berkeleyeduaffiliations: %w(AFFILIATE-TYPE-ADVCON-STUDENT AFFILIATE-TYPE-ADVCON-ATTENDEE STUDENT-TYPE-NOT REGISTERED),
+        berkeleyeduaffiliations: [
+          'AFFILIATE-TYPE-ADVCON-STUDENT',
+          'AFFILIATE-TYPE-ADVCON-ATTENDEE',
+          'STUDENT-TYPE-NOT REGISTERED'
+        ],
         givenname: ['Oski'],
         berkeleyeduconfidentialflag: ['false'],
         berkeleyeduemailrelflag: ['false'],
