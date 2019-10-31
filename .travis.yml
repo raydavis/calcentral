@@ -1,30 +1,48 @@
-sudo: false
-git:
-  depth: 1
 language: ruby
 bundler_args: --without development production --deployment --jobs=4 --retry=5
 cache: bundler
-
-rvm:
-  - jruby-9.1.14.0
-jdk:
-  - openjdk8
-matrix:
-  include:
-    - { rvm: jruby-9.1.14.0 }
-
-env:
-  - JRUBY_OPTS="--dev -J-Xmx900m" DISPLAY=:99.0 LOGGER_LEVEL=WARN TRAVIS_NODE_VERSION="8"
+env: JRUBY_OPTS="--dev -J-Xmx900m" DISPLAY=:99.0 LOGGER_LEVEL=WARN
+jdk: openjdk8
+node_js: 10.1.0
+os: linux
+rvm: jruby-9.1.14.0
 
 before_install:
-  - gem update --system 2.5.1
-  - gem --version
-  - gem uninstall -v '>= 2' -i $(rvm gemdir)@global -ax bundler || true
   - gem install bundler -v '1.15.4'
 
-before_script:
-  - ./script/front-end-build.sh
-
-script:
-  - ./script/front-end-tests.sh
-  - RAILS_ENV=test bundle exec rspec
+jobs:
+  include:
+    - stage: Lint
+      script:
+        - echo $ALWAYS_RUN_TYPE_LINT
+        - echo $ALWAYS_RUN_TYPE_RSPEC
+        - echo $RUN_TYPE_DEPLOY
+        - echo $TRAVIS_BRANCH
+        - echo $TRAVIS_BUILD_NUMBER
+        - echo $TRAVIS_COMMIT
+        - echo $TRAVIS_EVENT_TYPE
+        - echo $TRAVIS_JDK_VERSION
+        - echo $TRAVIS_PULL_REQUEST
+        - echo $TRAVIS_REPO_SLUG
+        - echo $TRAVIS_RUBY_VERSION
+    - # Lint JavaScript
+      if: type = pull_request OR env(ALWAYS_RUN_TYPE_LINT) = 'true'
+      script:
+        - npm config set strict-ssl false
+        - npm install
+        - npm run build
+        - npm run lint
+    - # Lint SCSS (parallel with above)
+      if: type = pull_request OR env(ALWAYS_RUN_TYPE_LINT) = 'true'
+      script:
+        - gem cleanup scss_lint
+        - gem install scss_lint --version 0.49.0
+        - scss-lint src/assets/stylesheets
+    - # RSpec
+      if: type = pull_request OR env(ALWAYS_RUN_TYPE_RSPEC) = 'true'
+      script:
+        - RAILS_ENV=test bundle exec rspec
+    - stage: Post-merge
+      if: repo = 'ets-berkeley-edu/calcentral' OR env(RUN_TYPE_DEPLOY) = 'true'
+      script:
+        - echo 'Running post-merge'
