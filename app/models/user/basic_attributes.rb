@@ -12,8 +12,13 @@ module User
         rows = EdoOracle::Queries.get_basic_people_attributes(next_batch)
         rows.each do |result|
           uid_set.delete result['ldap_uid']
-          unless ['A', 'Z'].include? result['person_type']
-            attrs << transform_campus_row(result)
+          unless result['person_type'] == 'Z'
+            parsed_row = transform_campus_row(result)
+            # CLC-7157 was triggered when an active student and an active employee were incorrectly
+            # flagged by person_type='A'. Guard against that error.
+            if (result['person_type'] != 'A') || parsed_row[:roles].slice(:student, :staff, :faculty, :guest).values.any?
+              attrs << parsed_row
+            end
           end
         end
       end
