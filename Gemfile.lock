@@ -223,7 +223,8 @@ GEM
       guard (~> 2.0)
       guard-compat (~> 1.0)
       spork (>= 0.8.4)
-    haml (4.0.5)
+    haml (5.1.2)
+      temple (>= 0.8.0)
       tilt
     hashie (3.6.0)
     headless (1.0.2)
@@ -458,6 +459,7 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
+    temple (0.8.2)
     test-unit (3.3.2)
       power_assert
     thor (0.20.3)
