@@ -34,7 +34,7 @@ RailsAdmin.config do |config|
   config.authenticate_with {
     if cookies[:reauthenticated] || !!Settings.features.reauthentication == false
       policy = AuthenticationState.new(session).policy
-      redirect_to main_app.root_path unless policy.can_author?
+      redirect_to main_app.root_path unless policy.can_administrate?
     else
       redirect_to main_app.reauth_admin_path
     end
@@ -95,10 +95,10 @@ RailsAdmin.config do |config|
       field :is_superuser do
         column_width 20
       end
-      field :is_author do
+      field :is_viewer do
         column_width 20
       end
-      field :is_viewer do
+      field :is_canvas_whitelisted do
         column_width 20
       end
       field :active do

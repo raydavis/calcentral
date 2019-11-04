@@ -16,7 +16,6 @@ describe "User::Auth" do
   it "anonymous user should have no permissions but still be active" do
     anon = User::Auth.get nil
     anon.is_superuser?.should be_falsey
-    anon.is_author?.should be_falsey
     anon.is_viewer?.should be_falsey
     anon.active?.should be_truthy
   end

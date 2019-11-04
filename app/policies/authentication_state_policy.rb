@@ -30,14 +30,6 @@ class AuthenticationStatePolicy
     @user.directly_authenticated? && (can_administrate? || Oec::Administrator.is_admin?(@user.user_id))
   end
 
-  def can_author?
-    @user.real_user_auth.active? && (@user.real_user_auth.is_superuser? || @user.real_user_auth.is_author?)
-  end
-
-  def can_clear_campus_links_cache?
-    can_clear_cache? || can_author?
-  end
-
   def can_clear_cache?
     # Only super-users are allowed to clear caches in production, but in development mode, anyone can.
     !Rails.env.production? || can_administrate?

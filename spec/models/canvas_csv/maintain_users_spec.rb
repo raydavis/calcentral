@@ -214,6 +214,51 @@ describe CanvasCsv::MaintainUsers do
     end
   end
 
+  context 'when an inactivated user account appears in whitelist' do
+    let(:uid) { random_id }
+    let(:whitelisted) { [uid] }
+    let(:student_id) { random_id }
+    let(:canvas_user_id) { random_id }
+    let(:existing_account) {
+      {
+        'canvas_user_id' => canvas_user_id,
+        'user_id' => "UID:#{uid}",
+        'login_id' => "inactive-#{uid}",
+        'first_name' => 'Etta',
+        'last_name' => 'James',
+        'full_name' => 'Etta James',
+        'email' => nil,
+        'status' => 'active'
+      }
+    }
+    let(:campus_rows) { [
+      {
+        ldap_uid: uid.to_i,
+        first_name: 'Etta',
+        last_name: 'James',
+        email_address: "#{uid}@example.edu",
+        roles: {student: true, expiredAccount: true},
+        student_id: student_id
+      }
+    ] }
+    before do
+      allow(User::Auth).to receive(:canvas_whitelist).and_return(whitelisted)
+      subject.categorize_user_account(existing_account, campus_rows)
+    end
+    it 'reactivates the user account but ignores the old student ID' do
+      expect(account_changes.length).to eq(1)
+      expect(account_changes[0]['login_id']).to eq uid
+      expect(account_changes[0]['user_id']).to eq "UID:#{uid}"
+      expect(account_changes[0]['email']).to eq "#{uid}@example.edu"
+      expect(subject.sis_user_id_changes).to be_blank
+      expect(subject.user_email_deletions).to be_blank
+    end
+    it 'updates known users hash' do
+      expect(known_users.length).to eq(1)
+      expect(known_users[uid.to_s]).to eq "UID:#{uid}"
+    end
+  end
+
   context 'when a user account no longer appears in the campus DB' do
     let(:uid) { random_id }
     let(:student_id) { random_id }
@@ -232,9 +277,11 @@ describe CanvasCsv::MaintainUsers do
     }
     let(:campus_rows) { [] }
     let(:ldap_record) { nil }
+    let(:whitelisted) { [] }
     before do
       allow(Settings.canvas_proxy).to receive(:inactivate_expired_users).and_return(inactivate_expired_users)
       allow_any_instance_of(CalnetLdap::Client).to receive(:search_by_uid).with(uid.to_i).and_return(ldap_record)
+      allow(User::Auth).to receive(:canvas_whitelist).and_return(whitelisted)
       subject.categorize_user_account(existing_account, campus_rows)
     end
     context 'when the campus DB account is marked as having no active CalNet account' do
@@ -262,6 +309,12 @@ describe CanvasCsv::MaintainUsers do
       end
       it 'updates known users hash' do
         expect(known_users[uid.to_s]).to eq "UID:#{uid}"
+      end
+      context 'when the account is whitelisted' do
+        let(:whitelisted) { [uid] }
+        it 'leaves the user account alone' do
+          expect(account_changes.length).to eq 0
+        end
       end
     end
     context 'when we can trust campus data sources' do
