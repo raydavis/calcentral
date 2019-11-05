@@ -34,7 +34,8 @@ module CanvasCsv
       return nil unless campus_user
       if Settings.canvas_proxy.mixed_sis_user_id
         if campus_user[:student_id].present? &&
-          (campus_user[:roles][:student] || campus_user[:roles][:concurrentEnrollmentStudent])
+          (campus_user[:roles][:student] || campus_user[:roles][:concurrentEnrollmentStudent]) &&
+          !campus_user[:roles][:expiredAccount]
           campus_user[:student_id].to_s
         else
           "UID:#{campus_user[:ldap_uid]}"

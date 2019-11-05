@@ -64,6 +64,10 @@ module CanvasCsv
       @user_email_deletions = []
     end
 
+    def whitelisted_uids
+      @whitelisted_uids ||= User::Auth.canvas_whitelist
+    end
+
     # Appends account changes to the given CSV.
     # Appends all known user IDs to the input array.
     # Makes any necessary changes to SIS user IDs.
@@ -163,15 +167,21 @@ module CanvasCsv
     def categorize_user_account(existing_account, campus_user_attributes)
       # Convert from CSV::Row for easier manipulation.
       old_account_data = existing_account.to_hash
+      new_account_data = old_account_data
       parsed_login_id = self.class.parse_login_id old_account_data['login_id']
       ldap_uid = parsed_login_id[:ldap_uid]
       inactive_account = parsed_login_id[:inactive_account]
+      whitelisted = whitelisted_uids.include?(ldap_uid.to_s)
       if ldap_uid
-        campus_user = campus_user_attributes.select { |r| (r[:ldap_uid].to_i == ldap_uid) && !r[:roles][:expiredAccount] }.first
-        if campus_user.present?
+        campus_user = campus_user_attributes.select { |r| (r[:ldap_uid].to_i == ldap_uid) }.first
+        if campus_user.present? && (!campus_user[:roles][:expiredAccount] || whitelisted)
           logger.warn "Reactivating account for LDAP UID #{ldap_uid}" if inactive_account
           new_account_data = canvas_user_from_campus_attributes campus_user
-          @known_users[ldap_uid.to_s] = new_account_data['user_id']
+        elsif whitelisted
+          if inactive_account
+            logger.warn "Reactivating account for unknown LDAP UID #{ldap_uid}"
+            new_account_data = old_account_data.merge('login_id' => ldap_uid)
+          end
         else
           # Check to see if there are obsolete email addresses to (potentially) delete.
           if old_account_data['email'].present? &&
@@ -186,10 +196,6 @@ module CanvasCsv
               'user_id' => "UID:#{ldap_uid}",
               'email' => nil
             )
-            @known_users[ldap_uid.to_s] = new_account_data['user_id']
-          else
-            @known_users[ldap_uid.to_s] = old_account_data['user_id']
-            return
           end
         end
         if old_account_data['user_id'] != new_account_data['user_id']
@@ -199,6 +205,7 @@ module CanvasCsv
             'new_id' => new_account_data['user_id']
           }
         end
+        @known_users[ldap_uid.to_s] = new_account_data['user_id']
         unless self.class.provisioned_account_eq_sis_account?(old_account_data, new_account_data)
           @user_import_csv << new_account_data
         end

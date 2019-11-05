@@ -18,14 +18,13 @@ describe AuthenticationStatePolicy do
   let(:inactive_superuser_uid) {random_id}
   let(:auth_map) do
     {
-      superuser_uid => {uid: superuser_uid, is_superuser: true, is_author: false, is_viewer: false, active: true},
-      author_uid => {uid: author_uid, is_superuser: false, is_author: true, is_viewer: false, active: true},
-      viewer_uid => {uid: viewer_uid, is_superuser: false, is_author: false, is_viewer: true, active: true},
-      inactive_viewer_uid => {uid: inactive_viewer_uid, is_superuser: false, is_author: false, is_viewer: true, active: false},
-      average_joe_uid => {uid: average_joe_uid, is_superuser: false, is_author: false, is_viewer: false, active: true},
-      inactive_average_joe_uid => {uid: average_joe_uid, is_superuser: false, is_author: false, is_viewer: false, active: false},
-      inactive_superuser_uid => {uid: inactive_superuser_uid, is_superuser: true, is_author: false, is_viewer: false, active: false},
-      oec_administrator_uid => {uid: oec_administrator_uid, is_superuser: false, is_author: false, is_viewer: false, active: true}
+      superuser_uid => {uid: superuser_uid, is_superuser: true, is_viewer: false, active: true},
+      viewer_uid => {uid: viewer_uid, is_superuser: false, is_viewer: true, active: true},
+      inactive_viewer_uid => {uid: inactive_viewer_uid, is_superuser: false, is_viewer: true, active: false},
+      average_joe_uid => {uid: average_joe_uid, is_superuser: false, is_viewer: false, active: true},
+      inactive_average_joe_uid => {uid: average_joe_uid, is_superuser: false, is_viewer: false, active: false},
+      inactive_superuser_uid => {uid: inactive_superuser_uid, is_superuser: true, is_viewer: false, active: false},
+      oec_administrator_uid => {uid: oec_administrator_uid, is_superuser: false, is_viewer: false, active: true}
     }
   end
   before do
@@ -67,10 +66,6 @@ describe AuthenticationStatePolicy do
       let(:user_id) {viewer_uid}
       its(:can_administrate?) { is_expected.to be false }
     end
-    context 'author as self' do
-      let(:user_id) {author_uid}
-      its(:can_administrate?) { is_expected.to be false }
-    end
     context 'superuser as someone else' do
       let(:user_id) {average_joe_uid}
       let(:original_user_id) {superuser_uid}
@@ -107,30 +102,6 @@ describe AuthenticationStatePolicy do
         let(:original_user_id) {viewer_uid}
         its(:can_administer_oec?) { is_expected.to be false }
       end
-    end
-  end
-
-  describe '#can_author?' do
-    context 'superuser as self' do
-      let(:user_id) {superuser_uid}
-      its(:can_author?) { is_expected.to be true }
-    end
-    context 'inactive superuser' do
-      let(:user_id) {inactive_superuser_uid}
-      its(:can_author?) { is_expected.to be false }
-    end
-    context 'viewer as self' do
-      let(:user_id) {viewer_uid}
-      its(:can_author?) { is_expected.to be false }
-    end
-    context 'author as self' do
-      let(:user_id) {author_uid}
-      its(:can_author?) { is_expected.to be true }
-    end
-    context 'in embedded app' do
-      let(:user_id) {author_uid}
-      let(:lti_authenticated_only) {true}
-      its(:can_author?) { is_expected.to be false }
     end
   end
 
