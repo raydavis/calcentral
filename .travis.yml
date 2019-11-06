@@ -12,20 +12,7 @@ before_install:
 
 jobs:
   include:
-    - stage: Lint
-      script:
-        - echo $ALWAYS_RUN_TYPE_LINT
-        - echo $ALWAYS_RUN_TYPE_RSPEC
-        - echo $RUN_TYPE_DEPLOY
-        - echo $TRAVIS_BRANCH
-        - echo $TRAVIS_BUILD_NUMBER
-        - echo $TRAVIS_COMMIT
-        - echo $TRAVIS_EVENT_TYPE
-        - echo $TRAVIS_JDK_VERSION
-        - echo $TRAVIS_PULL_REQUEST
-        - echo $TRAVIS_REPO_SLUG
-        - echo $TRAVIS_RUBY_VERSION
-    - # Lint JavaScript
+    - stage: Test
       if: type = pull_request OR env(ALWAYS_RUN_TYPE_LINT) = 'true'
       script:
         - npm config set strict-ssl false
@@ -42,7 +29,26 @@ jobs:
       if: type = pull_request OR env(ALWAYS_RUN_TYPE_RSPEC) = 'true'
       script:
         - RAILS_ENV=test bundle exec rspec
-    - stage: Post-merge
-      if: repo = 'ets-berkeley-edu/calcentral' OR env(RUN_TYPE_DEPLOY) = 'true'
+    - stage: Package
+      if: env(DEPLOY_CALCENTRAL_KNOB) = 'true'
       script:
-        - echo 'Running post-merge'
+        - echo $APP_TRAVIS_ACCESS_KEY
+        - echo $APP_TRAVIS_SECRET
+        - bundle install --deployment --local --retry 3
+        - bundle package --all
+        - bundle exec rake assets:precompile
+        - bundle exec rake fix_assets
+        - bundle exec rake torquebox:archive NAME=calcentral 2>&1 1>/dev/null
+        - ls -la
+
+deploy:
+  provider: codedeploy
+  access_key_id: $APP_TRAVIS_ACCESS_KEY
+  secret_access_key: $APP_TRAVIS_SECRET
+  bucket: rtl-junction
+  key: calcentral.knob
+  bundle_type: zip
+  application: CalCentral
+  region: us-west-2
+  on:
+    all_branches: true
