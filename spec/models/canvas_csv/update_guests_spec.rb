@@ -22,7 +22,7 @@ describe CanvasCsv::UpdateGuests do
       end
       it 'should import them' do
         canvas_sync = double('canvas_synchronization', :last_guest_user_sync => last_guest_user_sync_time)
-        expect(CanvasCsv::Synchronization).to receive(:get).and_return(canvas_sync)
+        expect(CanvasCsv::Synchronization).to receive(:get).twice.and_return(canvas_sync)
         expect(subject).to receive(:import_guests).with(canvas_user_rows)
         expect(canvas_sync).to receive(:update).and_return(true)
         subject.run
@@ -33,7 +33,7 @@ describe CanvasCsv::UpdateGuests do
       let(:ldap_search_results) { Net::BER::BerIdentifiedArray.new }
       it 'should not import' do
         canvas_sync = double('canvas_synchronization', :last_guest_user_sync => last_guest_user_sync_time)
-        expect(CanvasCsv::Synchronization).to receive(:get).and_return(canvas_sync)
+        expect(CanvasCsv::Synchronization).to receive(:get).twice.and_return(canvas_sync)
         expect(subject).to_not receive(:import_guests)
         expect(canvas_sync).to receive(:update).and_return(true)
         subject.run
