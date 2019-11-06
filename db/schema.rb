@@ -120,11 +120,6 @@ ActiveRecord::Schema.define(version: 20191101190708) do
 
   add_index "user_data", ["uid"], name: "index_user_data_on_uid", unique: true, using: :btree
 
-  create_table "user_roles", force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "slug", limit: 255
-  end
-
   create_table "webcast_course_site_log", force: :cascade do |t|
     t.integer  "canvas_course_site_id",    null: false
     t.datetime "webcast_tool_unhidden_at", null: false

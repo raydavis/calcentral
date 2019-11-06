@@ -14,7 +14,7 @@ module CanvasCsv
       else
         logger.warn 'No updates to import'
       end
-      sync_settings.update(last_guest_user_sync: current_time)
+      Synchronization.get.update(last_guest_user_sync: current_time)
       logger.warn "Guest synchronization completed for #{current_time} at #{Time.now.utc.to_s}"
     end
 
