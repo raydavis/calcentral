@@ -137,5 +137,31 @@ module EdoOracle
       SQL
     end
 
+    def self.get_recent_instructor_updates(since_timestamp, term_ids)
+      term_ids_in = term_ids.map {|term_id| "'#{term_id}'"}.join ','
+      timestamp_in = since_timestamp.utc.strftime('%Y-%m-%d %H:%M:%S')
+      safe_query <<-SQL
+        SELECT DISTINCT
+        up.instr_id AS instructor_csid, up.term_id, up.class_section_id AS section_id,
+        up.crse_id AS course_id,
+        instr."campus-uid" AS instructor_uid, instr."role-code" AS role_code,
+        sec."primary"
+        FROM SISEDO.CLASS_INSTR_UPDATESV00_VW up
+        JOIN SISEDO.ASSIGNEDINSTRUCTORV00_VW instr ON (
+          instr."cs-course-id" = up.crse_id AND
+          instr."term-id" = up.term_id AND
+          instr."session-id" = up.session_code AND
+          instr."offeringNumber" = up.crse_offer_nbr AND
+          instr."number" = up.class_section
+        )
+        JOIN SISEDO.CLASSSECTIONALLV01_MVW sec ON (
+          sec."id" = up.class_section_id AND sec."term-id" = up.term_id
+        )
+        WHERE up.change_type IN ('C', 'U') AND up.term_id  IN (#{term_ids_in}) AND
+        up.last_updated >= to_timestamp('#{timestamp_in}', 'yyyy-mm-dd hh24:mi:ss')
+        ORDER BY up.term_id, up.crse_id, up.class_section_id, instr."campus-uid"
+      SQL
+    end
+
   end
 end
