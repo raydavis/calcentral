@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191101190708) do
+ActiveRecord::Schema.define(version: 20191105212951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 20191101190708) do
   create_table "canvas_synchronization", force: :cascade do |t|
     t.datetime "last_guest_user_sync"
     t.datetime "latest_term_enrollment_csv_set"
+    t.datetime "last_instructor_sync"
   end
 
   create_table "oauth2_data", force: :cascade do |t|

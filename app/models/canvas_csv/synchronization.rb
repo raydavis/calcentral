@@ -7,6 +7,7 @@ module CanvasCsv
     self.table_name = 'canvas_synchronization'
     attr_accessible :last_guest_user_sync
     attr_accessible :latest_term_enrollment_csv_set
+    attr_accessible :last_instructor_sync
 
     # Returns single record used to store synchronization timestamp(s)
     def self.get
